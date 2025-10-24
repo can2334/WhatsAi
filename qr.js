@@ -63,19 +63,30 @@ async function genQR(qr) {
     process.exit(1);
   }
 
-  sock.ev.on('connection.update', (update) => {
-    const { qr, connection, lastDisconnect } = update;
-    if (qr) {
-      // Terminalde QR kodunu göstermek için
-      console.log('QR Kodu: ', qr);
-      // İstersen qrcode-terminal paketini kullanabilirsin
-      const qrcode = require('qrcode-terminal');
-      qrcode.generate(qr, { small: true });
+  sock.ev.on('connection.update', async (update) => {
+    let { connection, qr: qrCode } = update;
+    if (qrCode) {
+      qrcode.generate(qrCode, { small: true });
     }
-    if (connection === 'open') console.log('Bağlandı!');
-    if (connection === 'close') console.log('Bağlantı kapandı', lastDisconnect.error);
+    if (connection === "connecting") {
+      console.log("Connecting to WhatsApp... Please wait.");
+    } else if (connection === 'open') {
+      await delay(3000);
+      console.clear();
+      if (openedSocket == false) {
+        openedSocket = true;
+        try {
+          const chats = await sock.groupFetchAllParticipating();
+          chat_count = Object.keys(chats).length
+        } catch { }
+      }
+      countdown = Math.max(150, chat_count * 3.1);
+      fs.writeFileSync('.started', '1');
+    } else if (connection === 'close') {
+      console.log("connection close")
+      await genQR(qr);
+    }
   });
-
   sock.ev.on('creds.update', saveCreds);
 }
 

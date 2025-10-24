@@ -1,9 +1,9 @@
 addCommand({
     pattern: "^sudo ?(.*)",
     access: "sudo",
-    desc: "_Add, remove or list sudo users_",
-    usage: global.handlers[0] + "sudo <add | delete> <number with country code>",
-    warn: "_Users given sudo will have all bot permissions!_"
+    desc: "_*Sudo kullanıcı ekle, sil veya listele*_",
+    usage: global.handlers[0] + "sudo <add | delete> <ülke kodlu numara>",
+    warn: "_Sudo verilen kullanıcılar botun tüm izinlerine sahip olur!_"
 }, async (msg, match, sock, rawMessage) => {
     const groupId = msg.key.remoteJid;
     const args = (match[1] || "").trim().split(/\s+/);
@@ -31,7 +31,7 @@ addCommand({
 
     if (!number) {
         return await sock.sendMessage(groupId, {
-            text: "_Numara belirtmelisiniz._\n\n_Örnek:_ ```" + global.handlers[0] + "sudo add 905123456789```",
+            text: "_Lütfen bir numara belirtin._\n\n_Örnek:_ ```" + global.handlers[0] + "sudo add 905123456789```",
             edit: msg.key
         });
     }

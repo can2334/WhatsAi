@@ -5,7 +5,7 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 
-addCommand({ pattern: "^video ?(.*)", access: "all", desc: "Download video from YouTube.", usage: global.handlers[0] + "video <query || url>" }, async (msg, match, sock, rawMessage) => {
+addCommand({ pattern: "^video ?(.*)", access: "all", desc: "_*Download video from YouTube.*_", usage: global.handlers[0] + "video <query || url>" }, async (msg, match, sock, rawMessage) => {
     const query = match[1];
     if (!query) {
         if (msg.key.fromMe) {

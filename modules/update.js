@@ -1,7 +1,7 @@
 const simpleGit = require('simple-git');
 const git = simpleGit();
 
-addCommand({ pattern: "^update$", access: "sudo", desc: "_Update the bot._" }, async (msg, match, sock, rawMessage) => {
+addCommand({ pattern: "^update$", access: "sudo", desc: "_*Update the bot.*_" }, async (msg, match, sock, rawMessage) => {
     const groupId = msg.key.remoteJid;
 
     if (msg.key.fromMe) {
@@ -12,7 +12,7 @@ addCommand({ pattern: "^update$", access: "sudo", desc: "_Update the bot._" }, a
 
     await git.fetch();
     var commits = await git.log(["main" + '..origin/' + "main"]);
-    
+
     if (commits.total === 0) {
         if (msg.key.fromMe) {
             await sock.sendMessage(groupId, { text: `_🔄 No updates available._`, edit: msg.key });

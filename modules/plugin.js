@@ -1,7 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 
-addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plugin in the store. https://phaticusthiccy.github.io/PrimonMarket/" }, async (msg, match, sock, rawMessage) => {
+addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_*Mağazada eklenti arayın.*_ https://phaticusthiccy.github.io/PrimonMarket/" }, async (msg, match, sock, rawMessage) => {
     const groupId = msg.key.remoteJid;
     const query = match[1];
 
@@ -9,29 +9,29 @@ addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plug
         var getLocalPlugins = global.database.plugins;
         if (getLocalPlugins == undefined || getLocalPlugins.length == 0) {
             if (msg.key.fromMe) {
-                return await sock.sendMessage(groupId, { text: "_❌ No plugins found._\n\n_⌨️ To search for plugins, use_ ```" + global.handlers[0] + "plugin <plugin-name>```\n_⌨️ To get top downloaded plugins, use_ ```" + global.handlers[0] + "plugin top```", edit: msg.key });
+                return await sock.sendMessage(groupId, { text: "_❌ Hiç eklenti bulunamadı._\n\n_⌨️ Eklenti aramak için kullanın:_ ```" + global.handlers[0] + "plugin <eklenti-ismi>```\n_⌨️ En çok indirilen eklentileri görmek için:_ ```" + global.handlers[0] + "plugin top```", edit: msg.key });
             } else {
-                return await sock.sendMessage(groupId, { text: "_❌ No plugins found._\n\n_⌨️ To search for plugins, use_ ```" + global.handlers[0] + "plugin <plugin-name>```\n_⌨️ To get top downloaded plugins, use_ ```" + global.handlers[0] + "plugin top```" }, { quoted: rawMessage.messages[0] });
+                return await sock.sendMessage(groupId, { text: "_❌ Hiç eklenti bulunamadı._\n\n_⌨️ Eklenti aramak için kullanın:_ ```" + global.handlers[0] + "plugin <eklenti-ismi>```\n_⌨️ En çok indirilen eklentileri görmek için:_ ```" + global.handlers[0] + "plugin top```" }, { quoted: rawMessage.messages[0] });
             }
         } else {
 
-            var text = "📜 _Plugins_\n-------------------------";
+            var text = "📜 _Eklentiler_\n-------------------------";
             for (var i = 0; i < getLocalPlugins.length; i++) {
                 if (!fs.existsSync(getLocalPlugins[i].path)) {
                     global.database.plugins = global.database.plugins.filter(plugin => plugin.id != getLocalPlugins[i].id);
                     continue;
                 }
-                text += "\n_Plugin :: " + getLocalPlugins[i].name + "_\n_Version :: " + getLocalPlugins[i].version + "_\n_Author :: " + getLocalPlugins[i].author + "_\n_Description :: " + getLocalPlugins[i].description + "_\n_ID :: " + getLocalPlugins[i].id + "_\n-------------------------";
+                text += "\n_Eklenti :: " + getLocalPlugins[i].name + "_\n_Sürüm :: " + getLocalPlugins[i].version + "_\n_Yazar :: " + getLocalPlugins[i].author + "_\n_Açıklama :: " + getLocalPlugins[i].description + "_\n_ID :: " + getLocalPlugins[i].id + "_\n-------------------------";
             }
-            text += "\n\n_⌨️ To delete a plugin, use_ ```" + global.handlers[0] + "pldelete <plugin-id>```"
-            text += "\n_⌨️ To search for plugins, use_ ```" + global.handlers[0] + "plugin <plugin-name>```"
-            text += "\n_⌨️ To get top downloaded plugins, use_ ```" + global.handlers[0] + "plugin top```"
+            text += "\n\n_⌨️ Bir eklentiyi silmek için:_ ```" + global.handlers[0] + "pldelete <eklenti-id>```"
+            text += "\n_⌨️ Eklenti aramak için:_ ```" + global.handlers[0] + "plugin <eklenti-ismi>```"
+            text += "\n_⌨️ En çok indirilen eklentileri görmek için:_ ```" + global.handlers[0] + "plugin top```"
 
             if (global.database.plugins.length == 0) {
                 if (msg.key.fromMe) {
-                    return await sock.sendMessage(groupId, { text: "_❌ No plugins found._", edit: msg.key });
+                    return await sock.sendMessage(groupId, { text: "_❌ Hiç eklenti bulunamadı._", edit: msg.key });
                 } else {
-                    return await sock.sendMessage(groupId, { text: "_❌ No plugins found._" }, { quoted: rawMessage.messages[0] });
+                    return await sock.sendMessage(groupId, { text: "_❌ Hiç eklenti bulunamadı._" }, { quoted: rawMessage.messages[0] });
                 }
             }
             if (msg.key.fromMe) {
@@ -44,9 +44,9 @@ addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plug
 
     if (query == "top") {
         if (msg.key.fromMe) {
-            await sock.sendMessage(groupId, { text: "_🔍 Searching for plugins..._", edit: msg.key });
+            await sock.sendMessage(groupId, { text: "_🔍 Eklentiler aranıyor..._", edit: msg.key });
         } else {
-            await sock.sendMessage(groupId, { text: "_🔍 Searching for plugins..._" }, { quoted: rawMessage.messages[0] });
+            await sock.sendMessage(groupId, { text: "_🔍 Eklentiler aranıyor..._" }, { quoted: rawMessage.messages[0] });
         }
 
         var getPlugin = await axios.get("https://create.thena.workers.dev/pluginMarket");
@@ -57,7 +57,7 @@ addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plug
             return b.downloads - a.downloads;
         })
 
-        var text = "📜 _Top 5 Plugins_\n-------------------------";
+        var text = "📜 _En Çok İndirilen 5 Eklenti_\n-------------------------";
         var addedPlugins = [];
 
         for (var i = 0; i < 5; i++) {
@@ -66,15 +66,15 @@ addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plug
                     continue;
                 }
                 addedPlugins.push(plugins[i].pluginId);
-                text += "\n_Plugin :: " + plugins[i].pluginName + "_\n_Version :: " + plugins[i].pluginVersion + "_\n_Author :: " + plugins[i].author + "_\n_Description :: " + plugins[i].description + "_\n_ID :: " + plugins[i].pluginId + "_\n_Downloads :: " + plugins[i].downloads + "_\n-------------------------";
+                text += "\n_Eklenti :: " + plugins[i].pluginName + "_\n_Sürüm :: " + plugins[i].pluginVersion + "_\n_Yazar :: " + plugins[i].author + "_\n_Açıklama :: " + plugins[i].description + "_\n_ID :: " + plugins[i].pluginId + "_\n_İndirme Sayısı :: " + plugins[i].downloads + "_\n-------------------------";
             } catch {
                 continue;
             }
         }
 
-        text += "\n\n_⌨️ To install a plugin, use_ ```" + global.handlers[0] + "plinstall <plugin-id>```"
-        text += "\n_⌨️ To delete a plugin, use_ ```" + global.handlers[0] + "pldelete <plugin-id>```"
-        text += "\n_⌨️ To get top downloaded plugins, use_ ```" + global.handlers[0] + "plugin top```"
+        text += "\n\n_⌨️ Eklenti yüklemek için:_ ```" + global.handlers[0] + "plinstall <eklenti-id>```"
+        text += "\n_⌨️ Eklenti silmek için:_ ```" + global.handlers[0] + "pldelete <eklenti-id>```"
+        text += "\n_⌨️ En çok indirilen eklentileri görmek için:_ ```" + global.handlers[0] + "plugin top```"
 
         if (msg.key.fromMe) {
             return await sock.sendMessage(groupId, { text, edit: msg.key });
@@ -85,9 +85,9 @@ addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plug
     }
 
     if (msg.key.fromMe) {
-        await sock.sendMessage(groupId, { text: "_🔍 Searching for plugins..._", edit: msg.key });
+        await sock.sendMessage(groupId, { text: "_🔍 Eklentiler aranıyor..._", edit: msg.key });
     } else {
-        await sock.sendMessage(groupId, { text: "_🔍 Searching for plugins..._" }, { quoted: rawMessage.messages[0] });
+        await sock.sendMessage(groupId, { text: "_🔍 Eklentiler aranıyor..._" }, { quoted: rawMessage.messages[0] });
     }
 
     var getPlugin = await axios.get("https://create.thena.workers.dev/pluginMarket?search=" + query);
@@ -95,9 +95,9 @@ addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plug
 
     if (plugins.length == 0) {
         if (msg.key.fromMe) {
-            return await sock.sendMessage(groupId, { text: "_❌ No plugins found._", edit: msg.key });
+            return await sock.sendMessage(groupId, { text: "_❌ Eklenti bulunamadı._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ No plugins found._" }, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Eklenti bulunamadı._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
@@ -105,7 +105,7 @@ addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plug
         return b.downloads - a.downloads;
     })
 
-    var text = "📜 _Plugins_\n-------------------------";
+    var text = "📜 _Eklentiler_\n-------------------------";
     var addedPlugins = [];
 
     for (var i = 0; i < 5; i++) {
@@ -114,15 +114,15 @@ addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plug
                 continue;
             }
             addedPlugins.push(plugins[i].pluginId);
-            text += "\n_Plugin :: " + plugins[i].pluginName + "_\n_Version :: " + plugins[i].pluginVersion + "_\n_Author :: " + plugins[i].author + "_\n_Description :: " + plugins[i].description + "_\n_ID :: " + plugins[i].pluginId + "_\n_Downloads :: " + plugins[i].downloads + "_\n-------------------------";
+            text += "\n_Eklenti :: " + plugins[i].pluginName + "_\n_Sürüm :: " + plugins[i].pluginVersion + "_\n_Yazar :: " + plugins[i].author + "_\n_Açıklama :: " + plugins[i].description + "_\n_ID :: " + plugins[i].pluginId + "_\n_İndirme Sayısı :: " + plugins[i].downloads + "_\n-------------------------";
         } catch {
             continue;
         }
     }
 
-    text += "\n\n_⌨️ To install a plugin, use_ ```" + global.handlers[0] + "plinstall <plugin-id>```"
-    text += "\n_⌨️ To delete a plugin, use_ ```" + global.handlers[0] + "pldelete <plugin-id>```"
-    text += "\n_⌨️ To get top downloaded plugins, use_ ```" + global.handlers[0] + "plugin top```"
+    text += "\n\n_⌨️ Eklenti yüklemek için:_ ```" + global.handlers[0] + "plinstall <eklenti-id>```"
+    text += "\n_⌨️ Eklenti silmek için:_ ```" + global.handlers[0] + "pldelete <eklenti-id>```"
+    text += "\n_⌨️ En çok indirilen eklentileri görmek için:_ ```" + global.handlers[0] + "plugin top```"
 
     if (msg.key.fromMe) {
         return await sock.sendMessage(groupId, { text, edit: msg.key });
@@ -138,24 +138,24 @@ addCommand({ pattern: "^plinstall ?(.*)", access: "sudo", dontAddCommandList: tr
 
     if (!pluginId) {
         if (msg.key.fromMe) {
-            return await sock.sendMessage(groupId, { text: "_❌ Please enter the id of the plugin you want to install._", edit: msg.key });
+            return await sock.sendMessage(groupId, { text: "_❌ Lütfen yüklemek istediğiniz eklentinin ID’sini girin._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ Please enter the id of the plugin you want to install._" }, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Lütfen yüklemek istediğiniz eklentinin ID’sini girin._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
     if (msg.key.fromMe) {
-        await sock.sendMessage(groupId, { text: "_🔄 Installing plugin..._", edit: msg.key });
+        await sock.sendMessage(groupId, { text: "_🔄 Eklenti yükleniyor..._", edit: msg.key });
     } else {
-        await sock.sendMessage(groupId, { text: "_🔄 Installing plugin..._" }, { quoted: rawMessage.messages[0] });
+        await sock.sendMessage(groupId, { text: "_🔄 Eklenti yükleniyor..._" }, { quoted: rawMessage.messages[0] });
     }
 
     var getPlugin = await axios.get("https://create.thena.workers.dev/pluginMarket?id=" + pluginId);
     if (getPlugin.data.author == "Unknown") {
         if (msg.key.fromMe) {
-            return await sock.sendMessage(groupId, { text: "_❌ Plugin not found._", edit: msg.key });
+            return await sock.sendMessage(groupId, { text: "_❌ Eklenti bulunamadı._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ Plugin not found._" }, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Eklenti bulunamadı._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
@@ -163,16 +163,16 @@ addCommand({ pattern: "^plinstall ?(.*)", access: "sudo", dontAddCommandList: tr
 
     if (global.database.plugins && global.database.plugins.find(plugin2 => plugin2.id == plugin.pluginId)) {
         if (msg.key.fromMe) {
-            return await sock.sendMessage(groupId, { text: "_❌ Plugin already installed._", edit: msg.key });
+            return await sock.sendMessage(groupId, { text: "_❌ Eklenti zaten yüklü._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ Plugin already installed._" }, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Eklenti zaten yüklü._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
     if (msg.key.fromMe) {
-        await sock.sendMessage(groupId, { text: "_✅ Plugin installed successfully._\n\n_Please type_ ```" + global.handlers[0] + plugin.usage + "``` _to use the plugin!_", edit: msg.key });
+        await sock.sendMessage(groupId, { text: "_✅ Eklenti başarıyla yüklendi._\n\n_Kullanmak için yazın:_ ```" + global.handlers[0] + plugin.usage + "```", edit: msg.key });
     } else {
-        await sock.sendMessage(groupId, { text: "_✅ Plugin installed successfully._\n\n_Please type_ ```" + global.handlers[0] + plugin.usage + "``` _to use the plugin!_" }, { quoted: rawMessage.messages[0] });
+        await sock.sendMessage(groupId, { text: "_✅ Eklenti başarıyla yüklendi._\n\n_Kullanmak için yazın:_ ```" + global.handlers[0] + plugin.usage + "```" }, { quoted: rawMessage.messages[0] });
     }
 
     global.database.plugins.push({
@@ -194,16 +194,16 @@ addCommand({ pattern: "^pldelete ?(.*)", access: "sudo", dontAddCommandList: tru
 
     if (!pluginName) {
         if (msg.key.fromMe) {
-            return await sock.sendMessage(groupId, { text: "_❌ Please enter the name of the plugin you want to delete._", edit: msg.key });
+            return await sock.sendMessage(groupId, { text: "_❌ Lütfen silmek istediğiniz eklentinin adını girin._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ Please enter the name of the plugin you want to delete._" }, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Lütfen silmek istediğiniz eklentinin adını girin._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
     if (msg.key.fromMe) {
-        await sock.sendMessage(groupId, { text: "_🔄 Deleting plugin..._", edit: msg.key });
+        await sock.sendMessage(groupId, { text: "_🔄 Eklenti siliniyor..._", edit: msg.key });
     } else {
-        await sock.sendMessage(groupId, { text: "_🔄 Deleting plugin..._" }, { quoted: rawMessage.messages[0] });
+        await sock.sendMessage(groupId, { text: "_🔄 Eklenti siliniyor..._" }, { quoted: rawMessage.messages[0] });
     }
 
     if (global.database.plugins && global.database.plugins.find(plugin => plugin.id == pluginName)) {
@@ -211,15 +211,15 @@ addCommand({ pattern: "^pldelete ?(.*)", access: "sudo", dontAddCommandList: tru
         global.database.plugins = global.database.plugins.filter(plugin => plugin.id != pluginName);
         try { fs.unlinkSync(pluginPath); } catch (e) { }
         if (msg.key.fromMe) {
-            return await sock.sendMessage(groupId, { text: "_✅ Plugin deleted successfully._", edit: msg.key });
+            return await sock.sendMessage(groupId, { text: "_✅ Eklenti başarıyla silindi._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_✅ Plugin deleted successfully._" }, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_✅ Eklenti başarıyla silindi._" }, { quoted: rawMessage.messages[0] });
         }
     } else {
         if (msg.key.fromMe) {
-            return await sock.sendMessage(groupId, { text: "_❌ Plugin not found._", edit: msg.key });
+            return await sock.sendMessage(groupId, { text: "_❌ Eklenti bulunamadı._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ Plugin not found._" }, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Eklenti bulunamadı._" }, { quoted: rawMessage.messages[0] });
         }
     }
 })

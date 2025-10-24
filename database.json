@@ -28,21 +28,8 @@
     },
     {
       "chat": "120363068753822588@g.us",
-      "active": true,
-      "filters": [
-        {
-          "incoming": "sa",
-          "outgoing": "as"
-        },
-        {
-          "incoming": "sena",
-          "outgoing": "oç sena"
-        },
-        {
-          "incoming": "Sa",
-          "outgoing": "Aleyküm selam"
-        }
-      ]
+      "active": false,
+      "filters": []
     },
     {
       "chat": "120363422282166718@g.us",
@@ -89,28 +76,13 @@
     }
   ],
   "sudo": [
-    "905343214765",
+    "639640117384",
     "905525710742",
-    "905519590512"
+    "905519590512",
+    "905343214765"
   ],
-  "worktype": "public",
-  "globalMutes": [
-    {},
-    {
-      "chat": "120363421286397392@g.us",
-      "users": []
-    },
-    {
-      "chat": "120363422306225999@g.us",
-      "users": []
-    },
-    {
-      "chat": "120363068753822588@g.us",
-      "users": [
-        "206742696767499@lid"
-      ]
-    }
-  ],
+  "worktype": "private",
+  "globalMutes": [],
   "blacklist": [],
   "plugins": [
     {
@@ -120,14 +92,6 @@
       "author": "Can",
       "id": "attp",
       "path": "./modules/attp.js"
-    },
-    {
-      "name": "QuotLy",
-      "version": "1.1.4",
-      "description": "Generate stickers from text!",
-      "author": "Phaticusthiccy",
-      "id": "quotly",
-      "path": "./modules/quotely.js"
     },
     {
       "name": "Blackjack",
@@ -153,94 +117,10 @@
     "active": false
   },
   "users": {
-    "0000000@s.whatsapp.net": "Pampa",
-    "905510310485@s.whatsapp.net": "Ic3zy",
+    "134519164268545@lid": "bot",
+    "639640117384@s.whatsapp.net": "bot",
     "905343214765@s.whatsapp.net": "can",
-    "22415652470998@lid": "👑MERT👑",
-    "263496495304902@lid": "can",
-    "48078434377925@lid": "Baran Yılmaz 🕊",
-    "905051381011@s.whatsapp.net": "Enam Furkan",
-    "248232332525575@lid": "Enam Furkan",
-    "238821673308382@lid": "Ic3zy",
-    "44470141755574@lid": "Baran",
-    "905307856503@s.whatsapp.net": "~tuniss",
-    "63561975992375@lid": "FD",
-    "267100392271959@lid": "Sezwar06",
-    "262337223196745@lid": "Davut Binyıl",
-    "23905939009608@lid": "Alper Gökmen",
-    "71502632366307@lid": "Süleyman kılıç",
-    "905068638977@s.whatsapp.net": "Eflin Korkmaz",
-    "905519590512@s.whatsapp.net": "Batu",
-    "905061547176@s.whatsapp.net": "Yade",
-    "269182847467703@lid": "M",
-    "905525710742@s.whatsapp.net": "M",
-    "905058402384@s.whatsapp.net": "🌼🌼🏵",
-    "246342161068190@lid": "Efe Bakibaba",
-    "130738989056063@lid": "Samet",
-    "6285156180481@s.whatsapp.net": "Risss",
-    "12137203172@s.whatsapp.net": "12137203172",
-    "10510187647201@lid": "SBK",
-    "82046928044165@lid": "Emre",
-    "179998371655775@lid": "Sevda",
-    "905385734985@s.whatsapp.net": "❤️",
-    "236416491638984@lid": "MEHMET ENES",
-    "251230286786699@lid": "👑Bize Hiç Farketmez 👑🕊️🕊️",
-    "12988400595184@lid": "Can4k2",
-    "905413323893@s.whatsapp.net": "NATOYOLU YAŞA",
-    "122960618766568@lid": "Boran A.",
-    "216007176142869@lid": "SALİH GÜNEL",
-    "10926564577378@lid": "Alihan",
-    "905462173780@s.whatsapp.net": "BOSS LG",
-    "166731268010148@lid": "Emrullah Yılm",
-    "131512032837648@lid": "Batuhan",
-    "253725394395154@lid": "Fatih Turgut",
-    "182488966107275@lid": "Can",
-    "264041821909080@lid": "Uğur",
-    "196619307851913@lid": "Yakup",
-    "134170533720300@lid": "Samet Altun",
-    "247050931323092@lid": ".",
-    "222861608358036@lid": "kado",
-    "138697596993632@lid": "…",
-    "206498085007613@lid": "Fatih",
-    "40463054696677@lid": ".",
-    "905437156106@s.whatsapp.net": ".",
-    "136271309631694@lid": "MUHAMMET CAN ALAY 🦅",
-    "905335707191@s.whatsapp.net": ".",
-    "69260793651229@lid": "Yasin",
-    "200270281740415@lid": ".",
-    "905414676417@s.whatsapp.net": "Furkan"
-  },
-  "o3mini": [
-    {
-      "groupId": "905343214765@s.whatsapp.net",
-      "totalMessages": 0,
-      "systemPrompt": "",
-      "active": false
-    },
-    {
-      "groupId": "905510310485@s.whatsapp.net",
-      "totalMessages": 0,
-      "systemPrompt": "",
-      "active": false
-    },
-    {
-      "groupId": "905415620646@s.whatsapp.net",
-      "totalMessages": 0,
-      "systemPrompt": "",
-      "active": true
-    },
-    {
-      "groupId": "905525710742@s.whatsapp.net",
-      "totalMessages": 0,
-      "systemPrompt": "",
-      "active": true
-    }
-  ],
-  "o3miniConfigs": {
-    "onlyGroup": false,
-    "onlyPrivate": false,
-    "lockAllChats": false,
-    "generalSystemPrompt": ""
+    "28226608959539@lid": "Nur Artuç"
   },
   "games": {
     "blackjack": {
@@ -473,22 +353,5 @@
         "newMsg": false
       }
     }
-  },
-  "o3sessions": [
-    {
-      "groupId": "905525710742@s.whatsapp.net",
-      "active": true,
-      "systemPrompt": "",
-      "totalMessages": 0
-    }
-  ],
-  "lydia": {
-    "905343214765@s.whatsapp.net": false,
-    "905525710742@s.whatsapp.net": false
-  },
-  "chatActives": [
-    {
-      "chat": "905343214765@s.whatsapp.net"
-    }
-  ]
+  }
 }

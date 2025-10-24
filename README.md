@@ -1,6 +1,6 @@
-# PrimonProto - WhatsApp Bot
+# WhatsAi - WhatsApp Bot
 
-PrimonProto is a versatile WhatsApp bot built with Node.js and the Baileys library. It offers a range of features for automation and enhanced group management, making your WhatsApp experience more efficient and enjoyable.
+WhatsAi is a versatile WhatsApp bot built with Node.js and the Baileys library. It offers a range of features for automation and enhanced group management, making your WhatsApp experience more efficient and enjoyable.
 
 ## Features
 
@@ -40,8 +40,8 @@ These instructions assume you have Node.js (version 16 or higher) and npm (or ya
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/phaticusthiccy/PrimonProto.git
-   cd PrimonProto
+   git clone https://github.com/phaticusthiccy/WhatsAi.git
+   cd WhatsAi
    ```
 
 2. **Install dependencies:**
@@ -73,7 +73,7 @@ These instructions assume you have Node.js (version 16 or higher) and npm (or ya
 
 ## Usage
 
-PrimonProto uses handlers to trigger commands.  The default handlers are ".", "/", and "!".  You can customize these in the `database.json` file.  For example, to use the "!alive" command, send "!alive" in a WhatsApp chat where the bot is present.
+WhatsAi uses handlers to trigger commands.  The default handlers are ".", "/", and "!".  You can customize these in the `database.json` file.  For example, to use the "!alive" command, send "!alive" in a WhatsApp chat where the bot is present.
 
 **Command List:**  Use `!menu` (or your chosen handler + "menu") to see a complete list of available commands and their descriptions within WhatsApp.  You can also use `!menu <command>` to get specific help for a single command.
 

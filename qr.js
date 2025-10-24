@@ -4,8 +4,8 @@ const qrcode = require('qrcode-terminal');
 const pino = require('pino');
 var openedSocket = false;
 var chat_count = 0;
-try { fs.rmSync('./session', { recursive: true, force: true }); } catch {}
-try { fs.rmSync('./.started', { recursive: true, force: true }); } catch {}
+try { fs.rmSync('./session', { recursive: true, force: true }); } catch { }
+try { fs.rmSync('./.started', { recursive: true, force: true }); } catch { }
 var countdown = Math.max(150, chat_count * 5);
 
 const logger = pino({
@@ -40,13 +40,13 @@ rl.question("Login with QR code (1) or Phone Number (2)\n\n⚠️  Logging with 
       if (answer == "2") {
         rl.question("Enter your phone number. Example: 905123456789\n\n >> ", async (number) => {
           await loginWithPhone(number);
-        }); 
+        });
       } else if (answer == "1") {
         genQR(true);
       }
     }
   });
-  
+
 });
 
 async function genQR(qr) {
@@ -56,37 +56,26 @@ async function genQR(qr) {
     logger,
     auth: state,
     version: version,
-    getMessage: async (key) => {},
+    getMessage: async (key) => { },
   });
   if (!qr && !sock.authState.creds.registered) {
     console.log("You must use QR code to login.");
     process.exit(1);
   }
-  
-  sock.ev.on('connection.update', async (update) => {
-    let { connection, qr: qrCode } = update;
-    if (qrCode) {
-      qrcode.generate(qrCode, { small: true });
+
+  sock.ev.on('connection.update', (update) => {
+    const { qr, connection, lastDisconnect } = update;
+    if (qr) {
+      // Terminalde QR kodunu göstermek için
+      console.log('QR Kodu: ', qr);
+      // İstersen qrcode-terminal paketini kullanabilirsin
+      const qrcode = require('qrcode-terminal');
+      qrcode.generate(qr, { small: true });
     }
-    if (connection === "connecting") {
-      console.log("Connecting to WhatsApp... Please wait.");
-    } else if (connection === 'open') {
-      await delay(3000);
-      console.clear();
-      if (openedSocket == false) {
-        openedSocket = true;
-        try {
-          const chats = await sock.groupFetchAllParticipating();
-          chat_count = Object.keys(chats).length
-        } catch {}
-      }
-      countdown = Math.max(150, chat_count * 3.1);
-      fs.writeFileSync('.started', '1');
-    } else if (connection === 'close') {
-      console.log("connection close")
-      await genQR(qr);
-    }
+    if (connection === 'open') console.log('Bağlandı!');
+    if (connection === 'close') console.log('Bağlantı kapandı', lastDisconnect.error);
   });
+
   sock.ev.on('creds.update', saveCreds);
 }
 
@@ -97,7 +86,7 @@ async function loginWithPhone(phoneNumber) {
     logger,
     auth: state,
     version: version,
-    getMessage: async (key) => {},
+    getMessage: async (key) => { },
   });
 
   try {
@@ -110,7 +99,7 @@ async function loginWithPhone(phoneNumber) {
         try {
           const chats = await sock.groupFetchAllParticipating();
           chat_count = Object.keys(chats).length
-        } catch {}
+        } catch { }
         countdown = Math.max(150, chat_count * 3.1);
         fs.writeFileSync('.started', '1');
       } else if (connection === 'close') {
@@ -141,7 +130,7 @@ setInterval(async () => {
   console.clear();
   console.log(`Bot is syncing messages... (${(countdown / 10).toFixed(2)}s left. Chats :: ${chat_count})`);
   countdown--;
-  
+
   if (countdown < 0) {
     console.clear();
     console.log("Run `pm2 start main.js` to start the bot.");

@@ -73,9 +73,9 @@ const logger = pino({
   },
 });
 
-async function Primon() {
+async function S3nnzy() {
   const { version } = await fetchLatestBaileysVersion();
-  const { state, saveCreds  } = await useMultiFileAuthState(__dirname + "/session/");
+  const { state, saveCreds } = await useMultiFileAuthState(__dirname + "/session/");
 
   sock = makeWASocket({
     logger,
@@ -92,7 +92,7 @@ async function Primon() {
       const shouldReconnect = (lastDisconnect.error.output.statusCode !== 401);
       if (shouldReconnect) {
         console.log('Disconnected, reconnecting...');
-        Primon();
+        S3nnzy();
       } else {
         console.log('QR code was not scanned.');
       }
@@ -101,7 +101,7 @@ async function Primon() {
       const usrId = sock.user.id;
       const mappedId = usrId.split(':')[0] + `@s.whatsapp.net`;
       if (!global.similarity) global.similarity = await import('string-similarity-js');
-      await sock.sendMessage(mappedId, { text: "_Primon Online!_\n\n_Use_ ```" + global.handlers[0] + "menu``` _to see the list of commands._" });;
+      await sock.sendMessage(mappedId, { text: "_Pampa Online!_\n\n_Use_ ```" + global.handlers[0] + "menu``` _to see the list of commands._" });;
     }
   });
 
@@ -109,9 +109,9 @@ async function Primon() {
     try {
       if (!msg.hasOwnProperty("messages") || msg.messages.length === 0) return;
 
-      for (let {pushName, key} of msg.messages) {
+      for (let { pushName, key } of msg.messages) {
         if (pushName) {
-          const sender = key.participant ||(key.fromMe? sock.user.id.split(":")[0] + "@s.whatsapp.net": key.remoteJid);
+          const sender = key.participant || (key.fromMe ? sock.user.id.split(":")[0] + "@s.whatsapp.net" : key.remoteJid);
           global.database.users[sender] = pushName;
         }
       }
@@ -128,7 +128,7 @@ async function Primon() {
         if (msg.key.fromMe == false) {
           msg.key.participant = msg.key.remoteJid
         } else {
-          msg.key.participant = sock.user.id.split(':')[0] + `@s.whatsapp.net` 
+          msg.key.participant = sock.user.id.split(':')[0] + `@s.whatsapp.net`
         }
       }
 
@@ -144,7 +144,7 @@ async function Primon() {
             } else {
               await sock.sendMessage(msg.key.remoteJid, { image: { url: mediaPath }, caption: global.database.afkMessage.content == "" ? undefined : global.database.afkMessage.content }, { quoted: rawMessage.messages[0] });
             }
-            try { fs.unlinkSync(mediaPath) } catch {}
+            try { fs.unlinkSync(mediaPath) } catch { }
             return;
           }
         } else {
@@ -159,7 +159,7 @@ async function Primon() {
               } else {
                 await sock.sendMessage(msg.key.remoteJid, { image: { url: mediaPath }, caption: global.database.afkMessage.content == "" ? undefined : global.database.afkMessage.content }, { quoted: rawMessage.messages[0] });
               }
-              try { fs.unlinkSync(mediaPath) } catch {}
+              try { fs.unlinkSync(mediaPath) } catch { }
               return;
             }
           }
@@ -174,7 +174,7 @@ async function Primon() {
               } else {
                 await sock.sendMessage(msg.key.remoteJid, { image: { url: mediaPath }, caption: global.database.afkMessage.content == "" ? undefined : global.database.afkMessage.content });
               }
-              try { fs.unlinkSync(mediaPath) } catch {}
+              try { fs.unlinkSync(mediaPath) } catch { }
               return;
             }
           }
@@ -186,7 +186,7 @@ async function Primon() {
 
     } catch (error) {
       console.log(error);
-      await sock.sendMessage(sock.user.id, { text: `*⚠️ Primon Error:*\n${error}` });
+      await sock.sendMessage(sock.user.id, { text: `*⚠️ Pampa Error:*\n${error}` });
     }
   });
 
@@ -252,7 +252,7 @@ function loadModules(modulePath, logger = true, refresh = false) {
   });
 }
 global.loadModules = loadModules;
-Primon();
+S3nnzy();
 
 /**
  * Downloads media from a WhatsApp message and saves it to the specified file path.

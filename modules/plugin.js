@@ -1,7 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 
-addCommand({pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plugin in the store. https://phaticusthiccy.github.io/PrimonMarket/_" }, async (msg, match, sock, rawMessage) => {
+addCommand({ pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plugin in the store. https://phaticusthiccy.github.io/PrimonMarket/" }, async (msg, match, sock, rawMessage) => {
     const groupId = msg.key.remoteJid;
     const query = match[1];
 
@@ -11,10 +11,10 @@ addCommand({pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plugi
             if (msg.key.fromMe) {
                 return await sock.sendMessage(groupId, { text: "_❌ No plugins found._\n\n_⌨️ To search for plugins, use_ ```" + global.handlers[0] + "plugin <plugin-name>```\n_⌨️ To get top downloaded plugins, use_ ```" + global.handlers[0] + "plugin top```", edit: msg.key });
             } else {
-                return await sock.sendMessage(groupId, { text: "_❌ No plugins found._\n\n_⌨️ To search for plugins, use_ ```" + global.handlers[0] + "plugin <plugin-name>```\n_⌨️ To get top downloaded plugins, use_ ```" + global.handlers[0] + "plugin top```"}, { quoted: rawMessage.messages[0] });
+                return await sock.sendMessage(groupId, { text: "_❌ No plugins found._\n\n_⌨️ To search for plugins, use_ ```" + global.handlers[0] + "plugin <plugin-name>```\n_⌨️ To get top downloaded plugins, use_ ```" + global.handlers[0] + "plugin top```" }, { quoted: rawMessage.messages[0] });
             }
         } else {
-            
+
             var text = "📜 _Plugins_\n-------------------------";
             for (var i = 0; i < getLocalPlugins.length; i++) {
                 if (!fs.existsSync(getLocalPlugins[i].path)) {
@@ -53,13 +53,13 @@ addCommand({pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plugi
 
         var plugins = getPlugin.data;
 
-        plugins.sort(function(a, b) {
+        plugins.sort(function (a, b) {
             return b.downloads - a.downloads;
         })
-        
+
         var text = "📜 _Top 5 Plugins_\n-------------------------";
         var addedPlugins = [];
-        
+
         for (var i = 0; i < 5; i++) {
             try {
                 if (addedPlugins.includes(plugins[i].pluginId)) {
@@ -89,7 +89,7 @@ addCommand({pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plugi
     } else {
         await sock.sendMessage(groupId, { text: "_🔍 Searching for plugins..._" }, { quoted: rawMessage.messages[0] });
     }
-    
+
     var getPlugin = await axios.get("https://create.thena.workers.dev/pluginMarket?search=" + query);
     var plugins = getPlugin.data;
 
@@ -97,11 +97,11 @@ addCommand({pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plugi
         if (msg.key.fromMe) {
             return await sock.sendMessage(groupId, { text: "_❌ No plugins found._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ No plugins found._"}, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ No plugins found._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
-    plugins.sort(function(a, b) {
+    plugins.sort(function (a, b) {
         return b.downloads - a.downloads;
     })
 
@@ -129,10 +129,10 @@ addCommand({pattern: "^plugin ?(.*)", access: "sudo", desc: "_Seacrh for a plugi
     } else {
         return await sock.sendMessage(groupId, { text }, { quoted: rawMessage.messages[0] });
     }
-    
+
 })
 
-addCommand({pattern: "^plinstall ?(.*)", access: "sudo", dontAddCommandList: true }, async (msg, match, sock, rawMessage) => {
+addCommand({ pattern: "^plinstall ?(.*)", access: "sudo", dontAddCommandList: true }, async (msg, match, sock, rawMessage) => {
     const groupId = msg.key.remoteJid;
     const pluginId = match[1];
 
@@ -140,7 +140,7 @@ addCommand({pattern: "^plinstall ?(.*)", access: "sudo", dontAddCommandList: tru
         if (msg.key.fromMe) {
             return await sock.sendMessage(groupId, { text: "_❌ Please enter the id of the plugin you want to install._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ Please enter the id of the plugin you want to install._"}, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Please enter the id of the plugin you want to install._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
@@ -155,7 +155,7 @@ addCommand({pattern: "^plinstall ?(.*)", access: "sudo", dontAddCommandList: tru
         if (msg.key.fromMe) {
             return await sock.sendMessage(groupId, { text: "_❌ Plugin not found._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ Plugin not found._"}, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Plugin not found._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
@@ -165,14 +165,14 @@ addCommand({pattern: "^plinstall ?(.*)", access: "sudo", dontAddCommandList: tru
         if (msg.key.fromMe) {
             return await sock.sendMessage(groupId, { text: "_❌ Plugin already installed._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ Plugin already installed._"}, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Plugin already installed._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
     if (msg.key.fromMe) {
         await sock.sendMessage(groupId, { text: "_✅ Plugin installed successfully._\n\n_Please type_ ```" + global.handlers[0] + plugin.usage + "``` _to use the plugin!_", edit: msg.key });
     } else {
-        await sock.sendMessage(groupId, { text: "_✅ Plugin installed successfully._\n\n_Please type_ ```" + global.handlers[0] + plugin.usage + "``` _to use the plugin!_"}, { quoted: rawMessage.messages[0] });
+        await sock.sendMessage(groupId, { text: "_✅ Plugin installed successfully._\n\n_Please type_ ```" + global.handlers[0] + plugin.usage + "``` _to use the plugin!_" }, { quoted: rawMessage.messages[0] });
     }
 
     global.database.plugins.push({
@@ -188,7 +188,7 @@ addCommand({pattern: "^plinstall ?(.*)", access: "sudo", dontAddCommandList: tru
     return;
 })
 
-addCommand({pattern: "^pldelete ?(.*)", access: "sudo", dontAddCommandList: true }, async (msg, match, sock, rawMessage) => {
+addCommand({ pattern: "^pldelete ?(.*)", access: "sudo", dontAddCommandList: true }, async (msg, match, sock, rawMessage) => {
     const groupId = msg.key.remoteJid;
     const pluginName = match[1];
 
@@ -196,7 +196,7 @@ addCommand({pattern: "^pldelete ?(.*)", access: "sudo", dontAddCommandList: true
         if (msg.key.fromMe) {
             return await sock.sendMessage(groupId, { text: "_❌ Please enter the name of the plugin you want to delete._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ Please enter the name of the plugin you want to delete._"}, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Please enter the name of the plugin you want to delete._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
@@ -209,17 +209,17 @@ addCommand({pattern: "^pldelete ?(.*)", access: "sudo", dontAddCommandList: true
     if (global.database.plugins && global.database.plugins.find(plugin => plugin.id == pluginName)) {
         var pluginPath = global.database.plugins.find(plugin => plugin.id == pluginName).path;
         global.database.plugins = global.database.plugins.filter(plugin => plugin.id != pluginName);
-        try { fs.unlinkSync(pluginPath); } catch (e) {}
+        try { fs.unlinkSync(pluginPath); } catch (e) { }
         if (msg.key.fromMe) {
             return await sock.sendMessage(groupId, { text: "_✅ Plugin deleted successfully._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_✅ Plugin deleted successfully._"}, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_✅ Plugin deleted successfully._" }, { quoted: rawMessage.messages[0] });
         }
     } else {
         if (msg.key.fromMe) {
             return await sock.sendMessage(groupId, { text: "_❌ Plugin not found._", edit: msg.key });
         } else {
-            return await sock.sendMessage(groupId, { text: "_❌ Plugin not found._"}, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(groupId, { text: "_❌ Plugin not found._" }, { quoted: rawMessage.messages[0] });
         }
     }
 })

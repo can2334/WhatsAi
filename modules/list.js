@@ -12,20 +12,20 @@ const fs = require('fs');
  * @returns {Promise<void>} - A promise that resolves when the message has been sent.
  */
 
-addCommand( {pattern: "^men(u|ü) ?(.*)", access: "all", dontAddCommandList: true}, async (msg, match, sock, rawMessage) => {
+addCommand({ pattern: "^men(u|ü) ?(.*)", access: "all", dontAddCommandList: true }, async (msg, match, sock, rawMessage) => {
     const inputCommand = match[2].trim();
     let menuText = "";
 
     const userId = msg.key.participant || msg.key.remoteJid;
     const isSudo = msg.key.fromMe || global.database.sudo.includes(userId.split("@")[0]);
-    
+
     if (inputCommand) {
         var command = global.commands
-        .filter(x => !x.commandInfo.dontAddCommandList &&
-            (x.commandInfo.access !== "sudo" || isSudo) &&
-            (!x.commandInfo.onlyInGroups || msg.key.remoteJid.endsWith('@g.us')) &&
-            !(msg.key.remoteJid.split("@")[0] === sock.user.id.split("@")[0] && x.commandInfo.notAvaliablePersonelChat))
-        .find(x => x.commandInfo.pattern.replace(/[\^\$\.\*\+\?\(\)\[\]\{\}\\\/]/g, '').replace("sS", "").replace(/ /gmi, "") === inputCommand.replace(/ /gmi, ""));
+            .filter(x => !x.commandInfo.dontAddCommandList &&
+                (x.commandInfo.access !== "sudo" || isSudo) &&
+                (!x.commandInfo.onlyInGroups || msg.key.remoteJid.endsWith('@g.us')) &&
+                !(msg.key.remoteJid.split("@")[0] === sock.user.id.split("@")[0] && x.commandInfo.notAvaliablePersonelChat))
+            .find(x => x.commandInfo.pattern.replace(/[\^\$\.\*\+\?\(\)\[\]\{\}\\\/]/g, '').replace("sS", "").replace(/ /gmi, "") === inputCommand.replace(/ /gmi, ""));
 
         if (fs.existsSync(`./modules/${inputCommand}.js`)) command = false
         if (command) {
@@ -39,14 +39,14 @@ addCommand( {pattern: "^men(u|ü) ?(.*)", access: "all", dontAddCommandList: tru
             try {
                 const fileContent = fs.readFileSync(`./modules/${inputCommand}.js`, "utf8");
                 const patternValues = fileContent.match(/pattern:\s*"(.*?)"/g)?.map(match => match.split('"')[1].replace(/\\\\/g, "\\")) || [];
-                
+
                 patternValues.forEach(OGpattern => {
                     const command = global.commands
-                    .filter(x => !x.commandInfo.dontAddCommandList &&
-                        (x.commandInfo.access !== "sudo" || isSudo) &&
-                        (!x.commandInfo.onlyInGroups || msg.key.remoteJid.endsWith('@g.us')) &&
-                        !(msg.key.remoteJid.split("@")[0] === sock.user.id.split("@")[0] && x.commandInfo.notAvaliablePersonelChat))
-                    .find(x => x.commandInfo.pattern === OGpattern);
+                        .filter(x => !x.commandInfo.dontAddCommandList &&
+                            (x.commandInfo.access !== "sudo" || isSudo) &&
+                            (!x.commandInfo.onlyInGroups || msg.key.remoteJid.endsWith('@g.us')) &&
+                            !(msg.key.remoteJid.split("@")[0] === sock.user.id.split("@")[0] && x.commandInfo.notAvaliablePersonelChat))
+                        .find(x => x.commandInfo.pattern === OGpattern);
 
                     if (command) {
                         const { pattern, desc, usage, warn, access } = command.commandInfo;
@@ -59,11 +59,11 @@ addCommand( {pattern: "^men(u|ü) ?(.*)", access: "all", dontAddCommandList: tru
                 });
             } catch {
                 command = global.commands
-                .filter(x => !x.commandInfo.dontAddCommandList &&
-                    (x.commandInfo.access !== "sudo" || isSudo) &&
-                    (!x.commandInfo.onlyInGroups || msg.key.remoteJid.endsWith('@g.us')) &&
-                    !(msg.key.remoteJid.split("@")[0] === sock.user.id.split("@")[0] && x.commandInfo.notAvaliablePersonelChat))
-                    
+                    .filter(x => !x.commandInfo.dontAddCommandList &&
+                        (x.commandInfo.access !== "sudo" || isSudo) &&
+                        (!x.commandInfo.onlyInGroups || msg.key.remoteJid.endsWith('@g.us')) &&
+                        !(msg.key.remoteJid.split("@")[0] === sock.user.id.split("@")[0] && x.commandInfo.notAvaliablePersonelChat))
+
                 var modules_means = []
                 await command.forEach(async (x) => {
                     modules_means.push({
@@ -90,8 +90,8 @@ addCommand( {pattern: "^men(u|ü) ?(.*)", access: "all", dontAddCommandList: tru
 
     const grupId = msg.key.remoteJid;
     if (msg.key.fromMe) {
-        return await sock.sendMessage(grupId, { text: `📜 *Primon Menu*\n\n${menuText.trimEnd()}`, edit: msg.key });
+        return await sock.sendMessage(grupId, { text: `📜 *Pampa Menu*\n\n${menuText.trimEnd()}`, edit: msg.key });
     } else {
-        return await sock.sendMessage(grupId, { text: `📜 *Primon Menu*\n\n${menuText.trimEnd()}`}, { quoted: rawMessage.messages[0]});
+        return await sock.sendMessage(grupId, { text: `📜 *Pampa Menu*\n\n${menuText.trimEnd()}` }, { quoted: rawMessage.messages[0] });
     }
 })

@@ -5,20 +5,20 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 
-addCommand( {pattern: "^video ?(.*)", access: "all", desc: "Download video from YouTube.", usage: global.handlers[0] + "video <query || url>" }, async (msg, match, sock, rawMessage) => {
+addCommand({ pattern: "^video ?(.*)", access: "all", desc: "Download video from YouTube.", usage: global.handlers[0] + "video <query || url>" }, async (msg, match, sock, rawMessage) => {
     const query = match[1];
     if (!query) {
         if (msg.key.fromMe) {
             return await sock.sendMessage(msg.key.remoteJid, { text: "_❌ Please provide a video to search for._", edit: msg.key });
         } else {
-            return await sock.sendMessage(msg.key.remoteJid, { text: "_❌ Please provide a video to search for._"}, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(msg.key.remoteJid, { text: "_❌ Please provide a video to search for._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
     if (msg.key.fromMe) {
         await sock.sendMessage(msg.key.remoteJid, { text: "_⏳ Video Downloading.._", edit: msg.key });
     } else {
-        var publicMessage = await sock.sendMessage(msg.key.remoteJid, { text: "_⏳ Video Downloading.._"}, { quoted: rawMessage.messages[0] });
+        var publicMessage = await sock.sendMessage(msg.key.remoteJid, { text: "_⏳ Video Downloading.._" }, { quoted: rawMessage.messages[0] });
     }
 
     let videoId;
@@ -28,7 +28,7 @@ addCommand( {pattern: "^video ?(.*)", access: "all", desc: "Download video from 
         if (String(videoId) == "null") videoId = query
     } else {
         const ytVideo = await import('libmuse');
-        
+
         const searchResults = await ytVideo.search(query);
         if (!searchResults || searchResults.length === 0) {
             if (msg.key.fromMe) {
@@ -109,7 +109,7 @@ addCommand({ pattern: "^music ?(.*)", access: "all", desc: "Download music from 
             return await sock.sendMessage(msg.key.remoteJid, { text: "_❌ Please provide a music to search for._", edit: msg.key });
         }
         else {
-            return await sock.sendMessage(msg.key.remoteJid, { text: "_❌ Please provide a music to search for._"}, { quoted: rawMessage.messages[0] });
+            return await sock.sendMessage(msg.key.remoteJid, { text: "_❌ Please provide a music to search for._" }, { quoted: rawMessage.messages[0] });
         }
     }
 
@@ -117,7 +117,7 @@ addCommand({ pattern: "^music ?(.*)", access: "all", desc: "Download music from 
         await sock.sendMessage(msg.key.remoteJid, { text: "_⏳ Music Downloading.._", edit: msg.key });
     }
     else {
-        var publicMessage = await sock.sendMessage(msg.key.remoteJid, { text: "_⏳ Music Downloading.._"}, { quoted: rawMessage.messages[0] });
+        var publicMessage = await sock.sendMessage(msg.key.remoteJid, { text: "_⏳ Music Downloading.._" }, { quoted: rawMessage.messages[0] });
     }
 
     let url;
@@ -126,7 +126,7 @@ addCommand({ pattern: "^music ?(.*)", access: "all", desc: "Download music from 
         url = "https://www.youtube.com/watch?v=" + urlParams.get('v')
     } else {
         const ytMusic = await import('libmuse');
-        
+
         const searchResults = await ytMusic.search(query);
         if (!searchResults || searchResults.length === 0) {
             if (msg.key.fromMe) {
@@ -197,12 +197,12 @@ async function downloadAudio(link, file) {
     try {
         if (fs.existsSync(file)) fs.unlinkSync(file);
         const stream = ytdl(link, { "quality": "highestaudio", "filter": "audioonly" }).pipe(fs.createWriteStream(file));
-        
+
         await new Promise((resolve, reject) => {
             stream.on('finish', resolve);
             stream.on('error', reject);
         });
-        
+
         return true;
     } catch (error) {
         console.error(error);
@@ -222,12 +222,12 @@ async function downloadVideo(link, file, duration) {
     try {
         if (fs.existsSync(file)) fs.unlinkSync(file);
         const stream = ytdl(link, { "quality": duration > 300 ? "lowestVideo" : "highestvideo", "filter": "audioandvideo" }).pipe(fs.createWriteStream(file));
-        
+
         await new Promise((resolve, reject) => {
             stream.on('finish', resolve);
             stream.on('error', reject);
         });
-        
+
         return true;
     } catch (error) {
         console.error(error);
@@ -244,13 +244,13 @@ async function downloadVideo(link, file, duration) {
  */
 async function convertToOgg(file, output) {
     return new Promise((resolve, reject) => {
-      ffmpeg(file)
-        .outputOptions('-avoid_negative_ts', 'make_zero', '-ac', '1', '-qscale:a', '0')
-        .audioBitrate('192k')
-        .output(output)
-        .on('end', resolve)
-        .on('error', reject)
-        .run();
+        ffmpeg(file)
+            .outputOptions('-avoid_negative_ts', 'make_zero', '-ac', '1', '-qscale:a', '0')
+            .audioBitrate('192k')
+            .output(output)
+            .on('end', resolve)
+            .on('error', reject)
+            .run();
     });
 }
 
@@ -262,14 +262,14 @@ async function convertToOgg(file, output) {
  */
 async function convertToMp4(file, output) {
     return new Promise((resolve, reject) => {
-      ffmpeg(file)
-        .videoCodec('libx265')
-        .audioCodec('aac')
-        .audioBitrate('192k')
-        .outputOptions('-preset', 'ultrafast', '-crf', '28', '-movflags', '+faststart')
-        .output(output)
-        .on('end', resolve)
-        .on('error', reject)
-        .run();
+        ffmpeg(file)
+            .videoCodec('libx265')
+            .audioCodec('aac')
+            .audioBitrate('192k')
+            .outputOptions('-preset', 'ultrafast', '-crf', '28', '-movflags', '+faststart')
+            .output(output)
+            .on('end', resolve)
+            .on('error', reject)
+            .run();
     });
 }

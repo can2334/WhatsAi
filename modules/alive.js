@@ -1,53 +1,58 @@
-/**
- * Adds a command to check if the bot is alive.
- *
- * @param {Object} command - The command object.
- * @param {string} command.pattern - The regex pattern to match the command.
- * @param {boolean} command.fromMe - Whether the command should be from the bot owner.
- * @param {string} command.desc - The description of the command.
- * @param {Function} callback - The callback function to execute when the command is matched.
- * @param {Object} msg - The message object.
- * @param {Object} msg.key - The key object of the message.
- * @param {string} msg.key.remoteJid - The remote JID of the group or user.
- * @param {Object} match - The match object.
- * @param {Object} sock - The socket object for sending messages.
- * @returns {Promise<void>} - A promise that resolves when the message is sent.
-*/
-
-const fs = require('fs');
-
-addCommand({ pattern: "^alive$", access: "all", desc: "_Check if the bot is alive._" }, async (msg, match, sock, rawMessage) => {
+addCommand({ pattern: "^alive$", access: "all", desc: "_*Botun çalışıp çalışmadığını test eder*_" }, async (msg, match, sock, rawMessage) => {
     const grupId = msg.key.remoteJid;
     const aliveMessage = global.database.aliveMessage;
-    const mediaPath = `./alive.${aliveMessage.type}`;
+
+    // Dinamik içerik
+    const ownerName = "Pampa";
+    const userName = msg.pushName || "User";
+    const version = "2.0.0";
+    const ramUsage = (process.memoryUsage().rss / 1024 / 1024).toFixed(0) + " MB";
+    const diskSpace = "620 GB";
+    const instagram = "@nebakiyonumut";
+
+    const mode = global.database.worktype || "public";
+
+    const dynamicContent = `
+╭═══〘 Bot Durumu 〙═══⊷❍
+┃✩╭──────────────
+┃✩│ 👑 Owner : ${ownerName}
+┃✩│ 🧍 User : ${userName}
+┃✩│ ⚙️ Mode : ${mode}
+┃✩│ 🧩 Version : ${version}
+┃✩│ 💾 Ram : ${ramUsage}
+┃✩│ 💽 Disk : ${diskSpace}
+┃✩│ 📸 Insta : ${instagram}
+┃✩╰───────────────
+╰═════════════════⊷❍
+`;
+
+
+    const fs = require('fs');
 
     if (aliveMessage.type === "text") {
         if (msg.key.fromMe) {
             return await sock.sendMessage(grupId, {
                 edit: msg.key,
-                text: aliveMessage.content
+                text: dynamicContent
             });
         } else {
             return await sock.sendMessage(grupId, {
-                text: aliveMessage.content
+                text: dynamicContent
             }, { quoted: rawMessage.messages[0] });
         }
+    } else if (aliveMessage.type === "image") {
+        const mediaPath = aliveMessage.media.startsWith("./") ? aliveMessage.media : `./media/${aliveMessage.media}`;
+
+        if (!fs.existsSync(mediaPath)) {
+            console.log(`Hata: Medya dosyası bulunamadı: ${mediaPath}`);
+            return await sock.sendMessage(grupId, { text: "_Hata: Medya bulunamadı._" }, { quoted: rawMessage.messages[0] });
+        }
+
+        const messageOptions = {
+            image: { url: mediaPath },
+            caption: dynamicContent
+        };
+
+        return await sock.sendMessage(grupId, messageOptions, { quoted: rawMessage.messages[0] });
     }
-
-    if (!fs.existsSync(mediaPath)) {
-        fs.writeFileSync(mediaPath, aliveMessage.media, "base64");
-    }
-
-    if (msg.key.fromMe) {
-        await sock.sendMessage(grupId, {
-            delete: msg.key
-        });
-    }
-
-    const messageOptions = {
-        [aliveMessage.type]: { url: mediaPath },
-        caption: aliveMessage.content == "" ? undefined : aliveMessage.content
-    };
-
-    return await sock.sendMessage(grupId, messageOptions, { quoted: rawMessage.messages[0] });
 });

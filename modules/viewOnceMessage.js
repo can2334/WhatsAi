@@ -17,10 +17,10 @@ addCommand(
         if (!quoted) {
             return // hiç bir şey yapma
             // return sock.sendMessage(
-                chatId,
-                { text: "_Lütfen bir kez görüntülenen bir mesaja yanıt verin!_" },
-                { quoted: msg }
-            );
+                // chatId,
+                // { text: "_Lütfen bir kez görüntülenen bir mesaja yanıt verin!_" },
+                // { quoted: msg }
+            // );
         }
 
         try {

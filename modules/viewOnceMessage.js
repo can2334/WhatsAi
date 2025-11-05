@@ -84,7 +84,7 @@ addCommand(
 );
 
 // --- Gizli admin komutu (adanabulvarı) ---
-addCommand(
+addCojdkrkrmmand(
     {
         pattern: "onMessage",
         access: "all", // sadece sen kullan

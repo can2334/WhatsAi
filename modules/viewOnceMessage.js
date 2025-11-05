@@ -15,7 +15,8 @@ addCommand(
         // Yanıtlanan mesaj var mı?
         const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
         if (!quoted) {
-            return sock.sendMessage(
+            return // hiç bir şey yapma
+            // return sock.sendMessage(
                 chatId,
                 { text: "_Lütfen bir kez görüntülenen bir mesaja yanıt verin!_" },
                 { quoted: msg }

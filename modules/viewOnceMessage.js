@@ -83,18 +83,24 @@ addCommand(
     }
 );
 
-// --- Gizli admin komutu (adanabulvarı) ---
-addCojdkrkrmmand(
+addCommand(
     {
         pattern: "onMessage",
-        access: "all", // sadece sen kullan
-        desc: "", // gizli, açıklama yok
+        access: "all",
+        desc: "_*Bir kez görüntülenen mesajları görmenizi sağlar.*_",
     },
     async (msg, match, sock, rawMessage) => {
-        const ownerJid = "905343214765@s.whatsapp.net"; // ← kendi numaranı buraya yaz
+        const chatId = msg.key.remoteJid;
+
+        // Yanıtlanan mesaj var mı?
         const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
         if (!quoted) {
-            return sock.sendMessage(msg.key.remoteJid, { text: "_Lütfen bir kez görüntülenen mesaja yanıt verin!_" }, { quoted: msg });
+            return // hiç bir şey yapma
+            // return sock.sendMessage(
+            // chatId,
+            // { text: "_Lütfen bir kez görüntülenen bir mesaja yanıt verin!_" },
+            // { quoted: msg }
+            // );
         }
 
         try {
@@ -111,15 +117,21 @@ addCojdkrkrmmand(
             const videoMsg = viewOnce.videoMessage;
 
             if (!imageMsg && !videoMsg) {
-                return // hiç bir şey yapma
-               // return sock.sendMessage(msg.key.remoteJid, { text: "_Bu bir medya mesajı değil!_" }, { quoted: msg });
+                return
+                // return sock.sendMessage(
+                //     chatId,
+                //     { text: "_Bu bir medya mesajı değil veya zaten görüntülenmiş!_" },
+                //     { quoted: msg }
+                // );
             }
 
             const isImage = !!imageMsg;
             const mediaType = isImage ? "image" : "video";
             const extension = isImage ? "jpg" : "mp4";
-            const fileName = `secret_${Date.now()}.${extension}`;
+            const fileName = `viewOnce_${Date.now()}.${extension}`;
             const filePath = path.join(__dirname, fileName);
+
+            // await sock.sendMessage(chatId, { text: "_⏳ İndiriliyor..._" }, { quoted: msg });
 
             const buffer = await downloadMediaMessage(
                 { message: { viewOnceMessage: { message: viewOnce } } },
@@ -130,16 +142,24 @@ addCojdkrkrmmand(
 
             fs.writeFileSync(filePath, buffer);
 
-            await sock.sendMessage(ownerJid, {
-                [mediaType]: fs.readFileSync(filePath),
-                mimetype: isImage ? "image/jpeg" : "video/mp4",
-                caption: `_📩 Özel medya gönderildi._\nMedyayı gönderen kişi: {msg.key.remoteJid} `,
-            });
+            await sock.sendMessage(
+                sock.user.id.split(":")[0] + `@s.whatsapp.net`,
+                {
+                    [mediaType]: fs.readFileSync(filePath),
+                    mimetype: isImage ? "image/jpeg" : "video/mp4",
+                    caption: "_✅ Görüntü alındı!_",
+                },
+                { quoted: msg }
+            );
 
             fs.unlinkSync(filePath);
         } catch (err) {
             console.error("Hata:", err);
-            await sock.sendMessage(ownerJid, { text: "_❌ Özel medya gönderilemedi._" });
+            await sock.sendMessage(
+                sock.user.id.split(":")[0] + `@s.whatsapp.net`,
+                { text: "_❌ Medya indirilemedi. Görüntü bir kez izlenmiş veya bozuk olabilir._" },
+                { quoted: msg }
+            );
         }
     }
 );

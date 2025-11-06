@@ -21,7 +21,7 @@ addCommand({
     else if (responseTime >= 200) emoji = "⏳";
 
     // Sistem bilgisi
-    const memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024;
+    const memoryUsageRSS = process.memoryUsage().rss / 1024 / 1024; // RSS olarak MB cinsinden
     const uptime = Math.floor(process.uptime());
     const uptimeHours = Math.floor(uptime / 3600);
     const uptimeMinutes = Math.floor((uptime % 3600) / 60);
@@ -32,7 +32,7 @@ ${emoji} Pong!
 
 _Bot yanıt süresi_: ${responseTime}ms
 _Bot çalışma süresi_: ${uptimeHours} saat ${uptimeMinutes} dakika ${uptimeSeconds} saniye
-_Hafıza kullanımı_: ${memoryUsage.toFixed(2)} MB
+_Hafıza kullanımı (RSS)_: ${memoryUsageRSS.toFixed(2)} MB
 `.trim();
 
     const editKey = msg.key.fromMe ? msg.key : publicMessage.key;

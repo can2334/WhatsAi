@@ -1,12 +1,19 @@
-addCommand({ pattern: "^alive$", access: "all", desc: "_*Botun çalışıp çalışmadığını test eder*_" }, async (msg, match, sock, rawMessage) => {
+addCommand({
+    pattern: "^alive$",
+    access: "all",
+    desc: "_*Botun çalışıp çalışmadığını test eder*_"
+}, async (msg, match, sock, rawMessage) => {
     const grupId = msg.key.remoteJid;
     const aliveMessage = global.database.aliveMessage;
 
     // Dinamik içerik
-    const ownerName = "Pampa";
+    const ownerName = "Can";
     const userName = msg.pushName || "User";
-    const version = "2.0.0";
-    const ramUsage = (process.memoryUsage().rss / 1024 / 1024).toFixed(0) + " MB";
+    const version = "3.0.0";
+
+    // RAM bilgisi
+    const rssMB = (process.memoryUsage().rss / 1024 / 1024).toFixed(2);
+
     const diskSpace = "620 GB";
     const instagram = "@nebakiyonumut";
 
@@ -19,13 +26,12 @@ addCommand({ pattern: "^alive$", access: "all", desc: "_*Botun çalışıp çal�
 ┃✩│ 🧍 User : ${userName}
 ┃✩│ ⚙️ Mode : ${mode}
 ┃✩│ 🧩 Version : ${version}
-┃✩│ 💾 Ram : ${ramUsage}
+┃✩│ 💾 RAM : ${rssMB} MB (RSS)
 ┃✩│ 💽 Disk : ${diskSpace}
 ┃✩│ 📸 Insta : ${instagram}
 ┃✩╰───────────────
 ╰═════════════════⊷❍
 `;
-
 
     const fs = require('fs');
 

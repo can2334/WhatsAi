@@ -1,6 +1,6 @@
 # WhatsAi - WhatsApp Bot
 
-WhatsAi is a versatile WhatsApp bot built with Node.js and the Baileys library. It offers a range of features for automation and enhanced group management, making your WhatsApp experience more efficient and enjoyable.
+WhatsAi, Node.js ve Baileys kütüphanesi ile geliştirilmiş güçlü ve çok yönlü bir WhatsApp botudur. Gelişmiş otomasyon özellikleri ve grup yönetimi araçları sayesinde WhatsApp deneyiminizi hem daha verimli hem de daha keyifli hale getirir. Sohbetleri kolaylaştırır, tekrarlayan işleri otomatikleştirir ve gruplarınızda tam kontrol sağlar.
 
 ## Features
 

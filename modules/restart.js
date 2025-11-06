@@ -1,31 +1,41 @@
 addCommand({
-    pattern: "^restart$",
-    access: "sudo",
+    pattern: "^\\.?restart$", // hem restart hem de .restart için
     desc: "_*Botu yeniden başlatır.*_",
-    usage: ".restart",
+    access: "sudo",
+    onlyInGroups: false
 }, async (msg, match, sock, rawMessage) => {
-    const groupId = msg.key.remoteJid;
+    const chatId = msg.key.remoteJid;
 
-    // sudo kontrolü
-    let userId = msg.key.participant || msg.key.remoteJid;
-    let normalizedUserId = userId.split(":")[0].replace(/\D+/g, "");
-    let isSudo = global.database.sudo.some(i => i.replace(/\D+/g, "") === normalizedUserId);
-    if (!isSudo) return;
+    // Console'a yazdır, komut algılandı mı
+    console.log(`[COMMAND] restart komutu algılandı. Kullanıcı: ${msg.key.participant || chatId}`);
 
-    // Uyarı mesajı
-    const text = "♻️ Bot yeniden başlatılıyor...";
-    try {
-        if (msg.key.fromMe) {
-            await sock.sendMessage(groupId, { text, edit: msg.key });
-        } else if (rawMessage && rawMessage.messages && rawMessage.messages[0]) {
-            await sock.sendMessage(groupId, { text }, { quoted: rawMessage.messages[0] });
-        } else {
-            await sock.sendMessage(groupId, { text });
-        }
-    } catch (err) {
-        console.error("Mesaj gönderilirken hata:", err);
+    // Sudo kontrolü
+    const userId = msg.key.participant || msg.key.remoteJid;
+    const normalizedUserId = userId.split(":")[0].replace(/\D+/g, "");
+    const isSudo = global.database.sudo.some(i => i.replace(/\D+/g, "") === normalizedUserId);
+    if (!isSudo) {
+        console.log(`[COMMAND] restart komutu: kullanıcı sudo değil!`);
+        return; // sudo değilse çık
     }
 
-    console.log("Bot restart komutu ile yeniden başlatılıyor...");
-    process.exit(1); // PM2 veya başka process manager varsa otomatik yeniden başlatır
+    // WhatsApp mesajı gönder
+    try {
+        if (msg.key.fromMe) {
+            await sock.sendMessage(chatId, { text: "♻️ Bot yeniden başlatılıyor...", edit: msg.key });
+        } else if (rawMessage && rawMessage.messages && rawMessage.messages[0]) {
+            await sock.sendMessage(chatId, { text: "♻️ Bot yeniden başlatılıyor..." }, { quoted: rawMessage.messages[0] });
+        } else {
+            await sock.sendMessage(chatId, { text: "♻️ Bot yeniden başlatılıyor..." });
+        }
+        console.log(`[COMMAND] restart mesajı kullanıcıya gönderildi.`);
+    } catch (err) {
+        console.error(`[COMMAND] mesaj gönderilirken hata:`, err);
+    }
+
+    // PM2 restart
+    const { exec } = require('child_process');
+    exec("pm2 restart all", (err, stdout, stderr) => {
+        if (err) console.error("[COMMAND] PM2 restart hatası:", err);
+        else console.log("[COMMAND] PM2 restart başarılı:", stdout);
+    });
 });

@@ -122,9 +122,9 @@ async function S3nnzy() {
         global.similarity = await import('string-similarity-js');
 
       await sock.sendMessage(mappedId, {
-        text: "_Pampa Online!_\n\n_Use_ ```" +
+        text: "_WhatsAi Aktif!_\n\n_Kullanım_ ```" +
           global.handlers[0] +
-          "menu``` _to see the list of commands._",
+          "menu``` _komutlarını görmek için._",
       });
     }
   });
@@ -211,7 +211,7 @@ async function S3nnzy() {
 
     } catch (error) {
       console.log(error);
-      await sock.sendMessage(sock.user.id, { text: `*⚠️ Pampa Error:*\n${error}` });
+      await sock.sendMessage(sock.user.id, { text: `*⚠️ WhatsAi Hata!:*\n${error}` });
     }
   });
 

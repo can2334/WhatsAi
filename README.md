@@ -3,8 +3,13 @@
 WhatsAi, Node.js ve Baileys kütüphanesi ile geliştirilmiş güçlü ve çok yönlü bir WhatsApp botudur. Gelişmiş otomasyon özellikleri ve grup yönetimi araçları sayesinde WhatsApp deneyiminizi hem daha verimli hem de daha keyifli hale getirir. Sohbetleri kolaylaştırır, tekrarlayan işleri otomatikleştirir ve gruplarınızda tam kontrol sağlar.
 
 ## Features
+🎵 Medya ve Eğlence: Instagram, TikTok ve YouTube’dan hızlı indirme; şarkı sözleri, sticker oluşturma ve “bir kez görüntüle” mesajlarını görme.
 
-**Media & Entertainment:**
+👥 Grup Yönetimi: Üyeleri ekleyin veya yasaklayın, yöneticileri yönetin, toplu etiketleme ve global sessize alma.
+
+⚙️ Otomasyon ve Yardımcı Araçlar: Özel filtreler, canlı kontrol, çalışma modu ayarları, sudo yetkileri, kara liste ve özelleştirilebilir mesajlar.
+
+🔄 Her Zaman Güncel: Otomatik güncelleyici ile en yeni özellikler her zaman elinizin altında.
 
 * **Instagram Downloader:** Download photos and videos from Instagram links.
 * **TikTok Downloader:** Download TikTok videos with a simple command.
@@ -13,24 +18,26 @@ WhatsAi, Node.js ve Baileys kütüphanesi ile geliştirilmiş güçlü ve çok y
 * **Sticker Creator:** Convert images and stickers to different formats.
 * **View Once Message Viewer:** Reveal and download "view once" messages.
 
-**Group Administration:**
-
 * **Group Mute/Unmute:** Control group chat activity by muting and unmuting.
 * **Ban/Add Members:** Easily ban and add users to your groups.
 * **Promote/Demote Admins:** Manage group administrators efficiently.
 * **Tag All/Admins:** Quickly tag all members or just the admins in a group.
 * **Global Mute:** Mute specific users across all groups the bot is in.
 
-**Automation & Utilities:**
-
 * **Custom Filters:** Create automated responses to specific keywords or regular expressions.
-* **Alive Check:** Confirm the bot is online and responsive.
+* **Alive Check (`alive`):** Confirm the bot is online and responsive, including RAM (RSS & Heap), disk space, and mode info.
+* **Ping (`ping`):** Measure bot response time with emoji feedback ⚡ ⏳ ⚠️.
 * **Work Type (Public/Private):** Configure the bot to respond to all users or only authorized users.
 * **Sudo Users:** Grant elevated permissions to specific users.
 * **Blacklist:** Block specific groups from using the bot.
 * **Menu:** View the available commands and their usage.
 * **Edit Configurations:** Customize welcome, goodbye, and alive messages directly within WhatsApp.
-* **Auto-Updater:** Stay up-to-date with the latest features and improvements.
+* **Auto-Updater:** Stfdsay up-to-date with the latest features and improvements.
+
+* **RSS & Heap RAM Info:** Monitor the bot’s memory usage in real-time.
+* **Dynamic Alive Messages:** Show owner, version, RAM, disk, Instagram, and mode info in a visually appealing format.
+* **Emoji-Enhanced Ping:** Visual feedback for fast/slow responses.
+
 
 
 ## Installation

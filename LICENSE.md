@@ -1,6 +1,6 @@
-# MIT License
+# Custom MIT License
 
-Copyright (c) 2025 Phaticusthiccy
+Copyright (c) 2025 WhatsAi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

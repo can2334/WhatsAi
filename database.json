@@ -58,7 +58,10 @@
     "content": "Pampa AFK tostum😎🤪",
     "active": false
   },
-  "users": {},
+  "users": {
+    "138908436328550@lid": "Şakir",
+    "143284437577841@lid": "Goldmotosiklet"
+  },
   "games": {
     "blackjack": {
       "905343214765@s.whatsapp.net": {

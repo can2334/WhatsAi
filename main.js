@@ -79,7 +79,6 @@ async function S3nnzy() {
 
   sock = makeWASocket({
     logger,
-    printQRInTerminal: true,
     markOnlineOnConnect: false,
     browser: ["Ubuntu", "Chrome", "20.0.04"],
     auth: state,
@@ -87,23 +86,49 @@ async function S3nnzy() {
   });
 
   sock.ev.on('connection.update', async (update) => {
-    const { connection, lastDisconnect } = update;
+    const { connection, lastDisconnect, qr } = update;
+
+    // 👇 printQRInTerminal kullanmadan QR'ı terminalde gösteriyoruz
+    if (qr) {
+      const qrcode = require('qrcode-terminal');
+      console.log('\n📱 WhatsApp bağlantısı için bu QR kodu tara:\n');
+      qrcode.generate(qr, { small: true });
+    }
+
     if (connection === 'close') {
-      const shouldReconnect = (lastDisconnect.error.output.statusCode !== 401);
+      const shouldReconnect =
+        lastDisconnect?.error?.output?.statusCode !== 401 &&
+        lastDisconnect?.error?.output?.statusCode !== 403;
+
       if (shouldReconnect) {
-        console.log('Disconnected, reconnecting...');
-        S3nnzy();
+        console.log('⚠️ Bağlantı koptu, yeniden bağlanılıyor...');
+        await delay(2000);
+        S3nnzy(); // senin mevcut yeniden bağlanma fonksiyonun
       } else {
-        console.log('QR code was not scanned.');
+        console.log('❌ QR kod taranmadı veya oturum geçersiz. Yeni bağlantı gerekiyor.');
+        fs.rmSync('./session', { recursive: true, force: true }); // bozuk session'ı temizler
+        await delay(1000);
+        S3nnzy(); // yeniden başlat
       }
+    } else if (connection === 'connecting') {
+      console.log('🔄 WhatsApp bağlantısı kuruluyor...');
     } else if (connection === 'open') {
-      console.log('The connection is opened.');
+      console.log('✅ WhatsApp bağlantısı başarıyla kuruldu!');
+
       const usrId = sock.user.id;
-      const mappedId = usrId.split(':')[0] + `@s.whatsapp.net`;
-      if (!global.similarity) global.similarity = await import('string-similarity-js');
-      await sock.sendMessage(mappedId, { text: "_Pampa Online!_\n\n_Use_ ```" + global.handlers[0] + "menu``` _to see the list of commands._" });;
+      const mappedId = usrId.split(':')[0] + '@s.whatsapp.net';
+
+      if (!global.similarity)
+        global.similarity = await import('string-similarity-js');
+
+      await sock.sendMessage(mappedId, {
+        text: "_Pampa Online!_\n\n_Use_ ```" +
+          global.handlers[0] +
+          "menu``` _to see the list of commands._",
+      });
     }
   });
+
 
   sock.ev.on("messages.upsert", async (msg) => {
     try {

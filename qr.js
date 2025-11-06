@@ -2,150 +2,147 @@ const { default: makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion,
 const fs = require('fs');
 const qrcode = require('qrcode-terminal');
 const pino = require('pino');
-var openedSocket = false;
-var chat_count = 0;
+
+let openedSocket = false;
+let chat_count = 0;
+let countdown = 150;
+
 try { fs.rmSync('./session', { recursive: true, force: true }); } catch { }
 try { fs.rmSync('./.started', { recursive: true, force: true }); } catch { }
-var countdown = Math.max(150, chat_count * 5);
 
-const logger = pino({
-  level: "silent",
-  customLevels: {
-    trace: 10000,
-    debug: 10000,
-    info: 10000,
-    warn: 10000,
-    error: 10000,
-    fatal: 10000,
-  },
-});
-
+const logger = pino({ level: "silent" });
 
 const rl = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-console.clear();
-rl.question("Login with QR code (1) or Phone Number (2)\n\n⚠️  Logging with phone number is not recommend! :: ", async (answer) => {
+// Giriş ekranı
+async function login() {
   console.clear();
-  rl.question("Is there any other device in WhatsApp? (y/n)\n\n >> ", async (answer2) => {
+  rl.question("QR Kodu (1) veya Telefon Numarası (2) ile giriş yapın\n\n⚠️ Telefon numarası ile giriş yapmanız önerilmez! :: ", async (answer) => {
     console.clear();
-    if (answer2 == "y") {
+    rl.question("WhatsApp hesabınıza bağlı başka bir cihaz var mı? (e/h)\n\n >> ", async (answer2) => {
       console.clear();
-      console.log("Please logout from all devices before logging in.");
-      process.exit(1);
-    } else if (answer2 == "n") {
-      console.clear();
-      if (answer == "2") {
-        rl.question("Enter your phone number. Example: 905123456789\n\n >> ", async (number) => {
+
+      if (answer2.toLowerCase() === "e") {
+        console.log("❌ Lütfen giriş yapmadan önce tüm cihazlarınızdan çıkış yapın.");
+        process.exit(1);
+      }
+
+      if (answer === "2") {
+        rl.question("Telefon numaranızı girin (Örnek: 905123456789)\n\n >> ", async (number) => {
           await loginWithPhone(number);
         });
-      } else if (answer == "1") {
-        genQR(true);
+      } else if (answer === "1") {
+        await loginWithQR();
+      } else {
+        console.log("Geçersiz seçim yapıldı. Program sonlandırılıyor...");
+        process.exit(1);
       }
-    }
+    });
   });
+}
 
-});
+// QR kod ile giriş
+async function loginWithQR() {
+  const { version } = await fetchLatestBaileysVersion();
+  const { state, saveCreds } = await useMultiFileAuthState('./session/');
 
-async function genQR(qr) {
-  let { version } = await fetchLatestBaileysVersion();
-  let { state, saveCreds } = await useMultiFileAuthState('./session/');
-  let sock = makeWASocket({
+  const sock = makeWASocket({
     logger,
     auth: state,
-    version: version,
-    getMessage: async (key) => { },
+    version,
+    getMessage: async () => { },
   });
-  if (!qr && !sock.authState.creds.registered) {
-    console.log("You must use QR code to login.");
-    process.exit(1);
-  }
 
   sock.ev.on('connection.update', async (update) => {
-    let { connection, qr: qrCode } = update;
-    if (qrCode) {
-      qrcode.generate(qrCode, { small: true });
+    const { connection, qr } = update;
+
+    if (qr) {
+      console.log("\n📱 Aşağıdaki QR kodu WhatsApp'tan tarayın:\n");
+      qrcode.generate(qr, { small: true });
     }
+
     if (connection === "connecting") {
-      console.log("Connecting to WhatsApp... Please wait.");
-    } else if (connection === 'open') {
-      await delay(3000);
+      console.log("🔄 WhatsApp'a bağlanılıyor... Lütfen bekleyin.");
+    } else if (connection === "open") {
+      await delay(1000);
       console.clear();
-      if (openedSocket == false) {
+      if (!openedSocket) {
         openedSocket = true;
         try {
           const chats = await sock.groupFetchAllParticipating();
-          chat_count = Object.keys(chats).length
+          chat_count = Object.keys(chats).length;
         } catch { }
       }
       countdown = Math.max(150, chat_count * 3.1);
       fs.writeFileSync('.started', '1');
+      console.log("✅ QR kod ile başarıyla giriş yapıldı!");
     } else if (connection === 'close') {
-      console.log("connection close")
-      await genQR(qr);
+      console.log("⚠️ Bağlantı kapandı. Yeniden bağlanılıyor...");
+      await delay(2000);
+      await loginWithQR();
     }
   });
+
   sock.ev.on('creds.update', saveCreds);
 }
 
+// Telefon numarası ile giriş
 async function loginWithPhone(phoneNumber) {
-  let { version } = await fetchLatestBaileysVersion();
-  let { state, saveCreds } = await useMultiFileAuthState('./session/');
-  let sock = makeWASocket({
+  const { version } = await fetchLatestBaileysVersion();
+  const { state, saveCreds } = await useMultiFileAuthState('./session/');
+
+  const sock = makeWASocket({
     logger,
     auth: state,
-    version: version,
-    getMessage: async (key) => { },
+    version,
+    getMessage: async () => { },
   });
 
-  try {
-    sock.ev.on('connection.update', async (update) => {
-      let { connection } = update;
-      if (connection === 'open') {
-        console.log('Successfully logged in!');
-        await delay(3000);
-        openedSocket = true;
-        try {
-          const chats = await sock.groupFetchAllParticipating();
-          chat_count = Object.keys(chats).length
-        } catch { }
-        countdown = Math.max(150, chat_count * 3.1);
-        fs.writeFileSync('.started', '1');
-      } else if (connection === 'close') {
-        await loginWithPhone(phoneNumber);
-      } else if (!connection && !sock.authState.creds.registered) {
-        var pairingCode = await sock.requestPairingCode(phoneNumber);
-        pairingCode = pairingCode.slice(0, 4) + "-" + pairingCode.slice(4);
+  sock.ev.on('connection.update', async (update) => {
+    const { connection } = update;
 
-        console.log(`Your WhatsApp pairing code: ${pairingCode}`);
-        console.log('Enter this code on your WhatsApp app under "Linked Devices".');
-      }
-    });
+    if (connection === 'open') {
+      console.log("✅ Telefon numarası ile başarıyla giriş yapıldı!");
+      openedSocket = true;
+      try {
+        const chats = await sock.groupFetchAllParticipating();
+        chat_count = Object.keys(chats).length;
+      } catch { }
+      countdown = Math.max(150, chat_count * 3.1);
+      fs.writeFileSync('.started', '1');
+    } else if (connection === 'close') {
+      console.log("⚠️ Bağlantı kapandı. Telefon numarası ile yeniden bağlanılıyor...");
+      await delay(2000);
+      await loginWithPhone(phoneNumber);
+    } else if (!connection && !sock.authState.creds.registered) {
+      const pairingCode = await sock.requestPairingCode(phoneNumber);
+      const formattedCode = pairingCode.slice(0, 4) + "-" + pairingCode.slice(4);
+      console.log(`📲 WhatsApp eşleştirme kodunuz: ${formattedCode}`);
+      console.log("Bu kodu WhatsApp uygulamanızda 'Bağlı Cihazlar' kısmına girin.");
+    }
+  });
 
-    sock.ev.on('creds.update', saveCreds);
-  } catch (err) {
-    console.error('Login failed:', err);
-    process.exit(1);
-  }
+  sock.ev.on('creds.update', saveCreds);
 }
 
-setInterval(async () => {
-  if (openedSocket == false || chat_count <= 0) {
-    return;
-  }
-  if (!fs.existsSync('.started')) {
-    return;
-  }
+// Sayaç / mesaj senkronizasyonu
+setInterval(() => {
+  if (!openedSocket || chat_count <= 0) return;
+  if (!fs.existsSync('.started')) return;
+
   console.clear();
-  console.log(`Bot is syncing messages... (${(countdown / 10).toFixed(2)}s left. Chats :: ${chat_count})`);
+  console.log(`🔄 Mesajlar senkronize ediliyor... (${(countdown / 10).toFixed(2)} saniye kaldı | Sohbet sayısı: ${chat_count})`);
   countdown--;
 
   if (countdown < 0) {
     console.clear();
-    console.log("Run `pm2 start main.js` to start the bot.");
+    console.log("✅ Bot başarıyla çalışıyor!\n💡 Botu başlatmak için: pm2 start main.js");
     process.exit(1);
   }
-
 }, 100);
+
+// Başlat
+login();

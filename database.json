@@ -5,13 +5,7 @@
     "!"
   ],
   "version": "0.6.6",
-  "filters": [
-    {
-      "chat": "0000000@g.us",
-      "active": true,
-      "filters": []
-    }
-  ],
+  "filters": [],
   "aliveMessage": {
     "type": "image",
     "media": "./favicon.ico",
@@ -22,7 +16,14 @@
   "sudo": [],
   "worktype": "public",
   "globalMutes": [],
-  "blacklist": [],
+  "blacklist": [
+    "120363297621165791@g.us",
+    "120363420994673332@g.us",
+    "120363169068407727@g.us",
+    "120363137063132939@g.us",
+    "120363424624597923@g.us",
+    "120363421070927056@g.us"
+  ],
   "plugins": [
     {
       "name": "ATTP",

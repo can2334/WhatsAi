@@ -8,14 +8,14 @@
     "postinstall": "npm install -g pm2"
   },
   "keywords": [],
-  "author": "Phaticusthiccy",
+  "author": "Can",
   "license": "ISC",
   "dependencies": {
     "@distube/ytdl-core": "^4.15.9",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@tobyg74/tiktok-api-dl": "^1.2.2",
     "@whiskeysockets/baileys": "^7.0.0-rc.6",
-    "axios": "^1.12.2",
+    "axios": "^1.13.2",
     "bufferutil": "^4.0.9",
     "cheerio": "^1.1.2",
     "dotenv": "^17.2.3",

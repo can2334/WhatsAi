@@ -90,8 +90,8 @@ addCommand({ pattern: "^men(u|ü) ?(.*)", access: "all", dontAddCommandList: tru
 
     const grupId = msg.key.remoteJid;
     if (msg.key.fromMe) {
-        return await sock.sendMessage(grupId, { text: `📜 *Pampa Menu*\n\n${menuText.trimEnd()}`, edit: msg.key });
+        return await sock.sendMessage(grupId, { text: `📜 *WhatsAi Menu*\n\n${menuText.trimEnd()}`, edit: msg.key });
     } else {
-        return await sock.sendMessage(grupId, { text: `📜 *Pampa Menu*\n\n${menuText.trimEnd()}` }, { quoted: rawMessage.messages[0] });
+        return await sock.sendMessage(grupId, { text: `📜 *WhatsAi Menu*\n\n${menuText.trimEnd()}` }, { quoted: rawMessage.messages[0] });
     }
 })

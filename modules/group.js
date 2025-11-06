@@ -351,6 +351,7 @@ addCommand({
         console.error(e);
     }
 });
+// -------------------- GRUP DAVET LİNKİ --------------------
 addCommand({
     pattern: "^invite$",
     access: "all",
@@ -366,22 +367,24 @@ addCommand({
     if (!admins.includes(sender)) {
         return await sock.sendMessage(groupId, {
             text: "_❌ Bu komutu kullanmak için admin olmalısın!_"
-        }, { quoted: rawMessage?.messages?.[0] || msg });
+        }, { quoted: msg });
     }
 
     try {
-        const inviteCode = (await sock.groupInviteCode(groupId)).inviteCode;
+        const invite = await sock.groupInviteCode(groupId); // inviteCode objesi dönüyor
+        const inviteCode = invite?.inviteCode || invite; // fallback
         await sock.sendMessage(groupId, {
             text: `🔗 Grup Davet Linki: https://chat.whatsapp.com/${inviteCode}`
-        }, { quoted: rawMessage?.messages?.[0] || msg });
+        }, { quoted: msg });
     } catch (err) {
         console.error("Davet linki alınamadı:", err);
         await sock.sendMessage(groupId, {
             text: "_❌ Davet linki alınamadı! Bot admin mi kontrol et veya geçici bir sunucu hatası olabilir._"
-        }, { quoted: rawMessage?.messages?.[0] || msg });
-
+        }, { quoted: msg });
     }
 });
+
+// -------------------- GRUP DAVET QR --------------------
 addCommand({
     pattern: "^inviteqr$",
     access: "all",
@@ -389,28 +392,33 @@ addCommand({
     desc: "_*Grup davet linkinin QR kodunu gösterir.*_"
 }, async (msg, match, sock, rawMessage) => {
     const groupId = msg.key.remoteJid;
-    const admins = await global.getAdmins(groupId);
-    const sender = msg.key.participant || msg.participant;
+    const sender = msg.key.participant || msg.key.remoteJid;
 
+    const admins = await global.getAdmins(groupId);
     if (!admins.includes(sender)) {
         return await sock.sendMessage(groupId, {
             text: "_❌ Üzgünüm, bu grupta yönetici değilsin!_"
-        }, { quoted: rawMessage.messages[0] });
+        }, { quoted: msg });
     }
 
     try {
         const invite = await sock.groupInviteCode(groupId);
-        const inviteLink = `https://chat.whatsapp.com/${invite.inviteCode}`;
-        // Burada QR oluşturabiliriz
+        const inviteCode = invite?.inviteCode || invite;
+        const inviteLink = `https://chat.whatsapp.com/${inviteCode}`;
+
+        // QR oluştur
         const QRCode = require('qrcode');
         const qrImage = await QRCode.toDataURL(inviteLink);
 
         await sock.sendMessage(groupId, {
             image: { url: qrImage },
             caption: `✨🔗 Katılmak için QR kodu tarayın!`
-        }, { quoted: rawMessage.messages[0] });
+        }, { quoted: msg });
     } catch (err) {
         console.error("Davet QR alınamadı:", err);
-        await sock.sendMessage(groupId, { text: "_❌ Davet QR kodu alınamadı!_" }, { quoted: rawMessage.messages[0] });
+        await sock.sendMessage(groupId, {
+            text: "_❌ Davet QR kodu alınamadı!_"
+        }, { quoted: msg });
     }
 });
+

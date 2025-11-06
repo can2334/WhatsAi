@@ -11,7 +11,7 @@
   "author": "Can",
   "license": "ISC",
   "dependencies": {
-    "@distube/ytdl-core": "^4.15.9",
+    "@distube/ytdl-core": "^4.16.12",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@tobyg74/tiktok-api-dl": "^1.2.2",
     "@whiskeysockets/baileys": "^7.0.0-rc.6",
@@ -24,6 +24,7 @@
     "libmuse": "^0.1.1",
     "openai": "^6.6.0",
     "pino": "^9.6.0",
+    "play-dl": "^1.9.7",
     "qrcode": "^1.5.4",
     "qrcode-terminal": "latest",
     "qs": "latest",

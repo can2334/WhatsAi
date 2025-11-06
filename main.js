@@ -85,49 +85,64 @@ async function S3nnzy() {
     version: version,
   });
 
+  // Delay fonksiyonu
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
   sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
-    // 👇 printQRInTerminal kullanmadan QR'ı terminalde gösteriyoruz
+    // QR kod varsa terminale bas
     if (qr) {
       const qrcode = require('qrcode-terminal');
       console.log('\n📱 WhatsApp bağlantısı için bu QR kodu tara:\n');
       qrcode.generate(qr, { small: true });
     }
 
+    // Bağlantı koparsa
     if (connection === 'close') {
       const shouldReconnect =
         lastDisconnect?.error?.output?.statusCode !== 401 &&
         lastDisconnect?.error?.output?.statusCode !== 403;
 
       if (shouldReconnect) {
-        console.log('⚠️ Bağlantı koptu, yeniden bağlanılıyor...');
-        await delay(2000);
-        S3nnzy(); // senin mevcut yeniden bağlanma fonksiyonun
+        // Exponential backoff: 2^retryCount ms, max 10 saniye
+        if (typeof sock.retryCount === 'undefined') sock.retryCount = 0;
+        const backoffDelay = Math.min(1000 * Math.pow(2, sock.retryCount), 10000);
+        console.log(`⚠️ Bağlantı koptu, yeniden bağlanılıyor... ${backoffDelay}ms sonra`);
+        await delay(backoffDelay);
+        sock.retryCount++;
+        S3nnzy(); // mevcut yeniden bağlanma fonksiyonun
       } else {
         console.log('❌ QR kod taranmadı veya oturum geçersiz. Yeni bağlantı gerekiyor.');
         fs.rmSync('./session', { recursive: true, force: true }); // bozuk session'ı temizler
         await delay(1000);
+        sock.retryCount = 0;
         S3nnzy(); // yeniden başlat
       }
-    } else if (connection === 'connecting') {
+    }
+    // Bağlantı kuruluyor
+    else if (connection === 'connecting') {
       console.log('🔄 WhatsApp bağlantısı kuruluyor...');
-    } else if (connection === 'open') {
+    }
+    // Bağlantı açıldı
+    else if (connection === 'open') {
       console.log('✅ WhatsApp bağlantısı başarıyla kuruldu!');
+      sock.retryCount = 0; // retry sayısını sıfırla
+      const { setupAntiLink } = require('./modules/antilink');
 
-      const usrId = sock.user.id;
-      const mappedId = usrId.split(':')[0] + '@s.whatsapp.net';
+      setupAntiLink(sock, addCommand);
+
+      const mappedId = sock.user.id.split(':')[0] + '@s.whatsapp.net';
 
       if (!global.similarity)
         global.similarity = await import('string-similarity-js');
 
       await sock.sendMessage(mappedId, {
-        text: "_WhatsAi Aktif!_\n\n_Kullanım_ ```" +
-          global.handlers[0] +
-          "menu``` _komutlarını görmek için._",
+        text: `_WhatsAi Aktif!_\n\n_Kullanım_ \`\`\`${global.handlers[0]}menu\`\`\` _komutlarını görmek için._`,
       });
     }
   });
+
 
 
   sock.ev.on("messages.upsert", async (msg) => {

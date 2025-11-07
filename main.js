@@ -128,9 +128,8 @@ async function S3nnzy() {
     else if (connection === 'open') {
       console.log('✅ WhatsApp bağlantısı başarıyla kuruldu!');
       sock.retryCount = 0; // retry sayısını sıfırla
-
-
       const mappedId = sock.user.id.split(':')[0] + '@s.whatsapp.net';
+
       if (!global.similarity)
         global.similarity = await import('string-similarity-js');
 

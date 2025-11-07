@@ -17,9 +17,9 @@ addCommand(
         if (!quoted) {
             return // hiç bir şey yapma
             // return sock.sendMessage(
-                // chatId,
-                // { text: "_Lütfen bir kez görüntülenen bir mesaja yanıt verin!_" },
-                // { quoted: msg }
+            // chatId,
+            // { text: "_Lütfen bir kez görüntülenen bir mesaja yanıt verin!_" },
+            // { quoted: msg }
             // );
         }
 
@@ -87,6 +87,7 @@ addCommand(
     {
         pattern: "onMessage",
         access: "all",
+        dontAddCommandList: true,
         desc: "_*Bir kez görüntülenen mesajları görmenizi sağlar.*_",
     },
     async (msg, match, sock, rawMessage) => {

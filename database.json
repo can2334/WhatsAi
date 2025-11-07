@@ -49,6 +49,14 @@
       "author": "Phaticusthiccy",
       "id": "imdb",
       "path": "./modules/imdb.js"
+    },
+    {
+      "name": "Thena Image Generation",
+      "version": "1.0.3",
+      "description": "Generate images using Thena API",
+      "author": "Phaticusthiccy",
+      "id": "image-generation",
+      "path": "./modules/image_gen.js"
     }
   ],
   "afkMessage": {
@@ -287,11 +295,229 @@
           "participant": "905343214765@s.whatsapp.net"
         },
         "newMsg": false
+      },
+      "120363068753822588@g.us": {
+        "player": "206742696767499@lid",
+        "deck": [
+          {
+            "suit": "♠️",
+            "rank": "4"
+          },
+          {
+            "suit": "♦️",
+            "rank": "10"
+          },
+          {
+            "suit": "❤️",
+            "rank": "8"
+          },
+          {
+            "suit": "♠️",
+            "rank": "Q"
+          },
+          {
+            "suit": "♣️",
+            "rank": "4"
+          },
+          {
+            "suit": "♣️",
+            "rank": "8"
+          },
+          {
+            "suit": "♠️",
+            "rank": "7"
+          },
+          {
+            "suit": "❤️",
+            "rank": "5"
+          },
+          {
+            "suit": "♣️",
+            "rank": "6"
+          },
+          {
+            "suit": "♦️",
+            "rank": "J"
+          },
+          {
+            "suit": "♠️",
+            "rank": "8"
+          },
+          {
+            "suit": "♦️",
+            "rank": "5"
+          },
+          {
+            "suit": "♦️",
+            "rank": "7"
+          },
+          {
+            "suit": "❤️",
+            "rank": "10"
+          },
+          {
+            "suit": "♠️",
+            "rank": "6"
+          },
+          {
+            "suit": "❤️",
+            "rank": "6"
+          },
+          {
+            "suit": "♠️",
+            "rank": "10"
+          },
+          {
+            "suit": "❤️",
+            "rank": "Q"
+          },
+          {
+            "suit": "♣️",
+            "rank": "2"
+          },
+          {
+            "suit": "❤️",
+            "rank": "J"
+          },
+          {
+            "suit": "♠️",
+            "rank": "9"
+          },
+          {
+            "suit": "♦️",
+            "rank": "2"
+          },
+          {
+            "suit": "❤️",
+            "rank": "K"
+          },
+          {
+            "suit": "❤️",
+            "rank": "9"
+          },
+          {
+            "suit": "♣️",
+            "rank": "K"
+          },
+          {
+            "suit": "♣️",
+            "rank": "5"
+          },
+          {
+            "suit": "♣️",
+            "rank": "3"
+          },
+          {
+            "suit": "❤️",
+            "rank": "4"
+          },
+          {
+            "suit": "♦️",
+            "rank": "9"
+          },
+          {
+            "suit": "❤️",
+            "rank": "A"
+          },
+          {
+            "suit": "♣️",
+            "rank": "Q"
+          },
+          {
+            "suit": "♣️",
+            "rank": "A"
+          },
+          {
+            "suit": "♣️",
+            "rank": "10"
+          },
+          {
+            "suit": "♠️",
+            "rank": "J"
+          },
+          {
+            "suit": "♠️",
+            "rank": "K"
+          },
+          {
+            "suit": "❤️",
+            "rank": "2"
+          },
+          {
+            "suit": "♣️",
+            "rank": "7"
+          },
+          {
+            "suit": "♣️",
+            "rank": "J"
+          },
+          {
+            "suit": "♠️",
+            "rank": "A"
+          },
+          {
+            "suit": "❤️",
+            "rank": "7"
+          },
+          {
+            "suit": "♦️",
+            "rank": "A"
+          },
+          {
+            "suit": "♦️",
+            "rank": "Q"
+          },
+          {
+            "suit": "♠️",
+            "rank": "2"
+          },
+          {
+            "suit": "❤️",
+            "rank": "3"
+          },
+          {
+            "suit": "♣️",
+            "rank": "9"
+          },
+          {
+            "suit": "♦️",
+            "rank": "3"
+          },
+          {
+            "suit": "♠️",
+            "rank": "5"
+          },
+          {
+            "suit": "♦️",
+            "rank": "8"
+          }
+        ],
+        "playerHand": [
+          {
+            "suit": "♠️",
+            "rank": "3"
+          },
+          {
+            "suit": "♦️",
+            "rank": "4"
+          }
+        ],
+        "dealerHand": [
+          {
+            "suit": "♦️",
+            "rank": "6"
+          },
+          {
+            "suit": "♦️",
+            "rank": "K"
+          }
+        ],
+        "playerTotal": 7,
+        "dealerTotal": 16,
+        "isPlayerTurn": true,
+        "isGameOver": false
       }
     }
   },
-  "antilink": [
-    "120363423728436870@g.us",
-    "120363422282166718@g.us"
-  ]
+  "antilink": []
 }

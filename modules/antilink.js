@@ -1,7 +1,7 @@
 // antiLinkSimple.js
 async function setupAntiLink(sock, addCommand) {
     // Anti-link aç/kapat komutu
-    adkpjlrlrldCommand({
+    addCommand({
         pattern: "^antilink",
         desc: "_*Grup içinde link paylaşımını engeller.*_",
         access: "sudo",

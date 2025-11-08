@@ -12,11 +12,11 @@ addCommand({
     // Sudo kontrolü
     const userId = msg.key.participant || msg.key.remoteJid;
     const normalizedUserId = userId.split(":")[0].replace(/\D+/g, "");
-    const isSudo = global.database.sudo.some(i => i.replace(/\D+/g, "") === normalizedUserId);
-    if (!isSudo) {
-        console.log(`[COMMAND] restart komutu: kullanıcı sudo değil!`);
-        return; // sudo değilse çık
-    }
+    // const isSudo = global.database.sudo.some(i => i.replace(/\D+/g, "") === normalizedUserId);
+    // if (!isSudo) {
+    //     console.log(`[COMMAND] restart komutu: kullanıcı sudo değil!`);
+    //     return; // sudo değilse çık
+    // }
 
     // WhatsApp mesajı gönder
     try {

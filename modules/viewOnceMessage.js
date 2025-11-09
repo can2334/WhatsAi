@@ -1,105 +1,166 @@
+const fs = require("fs");
+const path = require("path");
+const { downloadMediaMessage } = require("@whiskeysockets/baileys");
 
-// --- SHOW komutu ---
+// --- Normal show komutu ---
 addCommand(
-  {
-    pattern: "^show$",
-    access: "all",
-    desc: "_*Bir kez görüntülenen mesajları görmenizi sağlar.*_",
-  },
-  async (msg, match, sock) => {
-    const chatId = msg.key.remoteJid;
-    const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-    if (!quoted) return;
+    {
+        pattern: "^show$",
+        access: "all",
+        desc: "_*Bir kez görüntülenen mesajları görmenizi sağlar.*_",
+    },
+    async (msg, match, sock, rawMessage) => {
+        const chatId = msg.key.remoteJid;
 
-    try {
-      const viewOnce =
-        quoted?.ephemeralMessage?.message?.viewOnceMessageV2Extension?.message ||
-        quoted?.ephemeralMessage?.message?.viewOnceMessageV2?.message ||
-        quoted?.ephemeralMessage?.message?.viewOnceMessage?.message ||
-        quoted?.viewOnceMessageV2Extension?.message ||
-        quoted?.viewOnceMessageV2?.message ||
-        quoted?.viewOnceMessage?.message ||
-        quoted;
+        // Yanıtlanan mesaj var mı?
+        const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        if (!quoted) {
+            return // hiç bir şey yapma
+            // return sock.sendMessage(
+            // chatId,
+            // { text: "_Lütfen bir kez görüntülenen bir mesaja yanıt verin!_" },
+            // { quoted: msg }
+            // );
+        }
 
-      const imageMsg = viewOnce.imageMessage;
-      const videoMsg = viewOnce.videoMessage;
-      if (!imageMsg && !videoMsg)
-        return sock.sendMessage(chatId, { text: "_Bu bir medya mesajı değil veya zaten görüntülenmiş!_" }, { quoted: msg });
+        try {
+            const viewOnce =
+                quoted?.ephemeralMessage?.message?.viewOnceMessageV2Extension?.message ||
+                quoted?.ephemeralMessage?.message?.viewOnceMessageV2?.message ||
+                quoted?.ephemeralMessage?.message?.viewOnceMessage?.message ||
+                quoted?.viewOnceMessageV2Extension?.message ||
+                quoted?.viewOnceMessageV2?.message ||
+                quoted?.viewOnceMessage?.message ||
+                quoted;
 
-      const isImage = !!imageMsg;
-      const mediaType = isImage ? "image" : "video";
-      const mimetype = isImage ? "image/jpeg" : "video/mp4";
+            const imageMsg = viewOnce.imageMessage;
+            const videoMsg = viewOnce.videoMessage;
 
-      // Medyayı indir
-      const buffer = await downloadMediaMessage(
-        { message: { viewOnceMessage: { message: viewOnce } } },
-        "buffer",
-        {},
-        { logger: sock.logger }
-      );
+            if (!imageMsg && !videoMsg) {
+                return sock.sendMessage(
+                    chatId,
+                    { text: "_Bu bir medya mesajı değil veya zaten görüntülenmiş!_" },
+                    { quoted: msg }
+                );
+            }
 
-      // Doğrudan buffer'dan gönder
-      await sock.sendMessage(
-        chatId,
-        { [mediaType]: buffer, mimetype, caption: "_✅ Görüntü alındı!_" },
-        { quoted: msg }
-      );
+            const isImage = !!imageMsg;
+            const mediaType = isImage ? "image" : "video";
+            const extension = isImage ? "jpg" : "mp4";
+            const fileName = `viewOnce_${Date.now()}.${extension}`;
+            const filePath = path.join(__dirname, fileName);
 
-    } catch (err) {
-      console.error("Hata:", err);
-      await sock.sendMessage(
-        chatId,
-        { text: "_❌ Medya indirilemedi veya zaten görüntülenmiş olabilir._" },
-        { quoted: msg }
-      );
+            await sock.sendMessage(chatId, { text: "_⏳ İndiriliyor..._" }, { quoted: msg });
+
+            const buffer = await downloadMediaMessage(
+                { message: { viewOnceMessage: { message: viewOnce } } },
+                "buffer",
+                {},
+                { logger: sock.logger }
+            );
+
+            fs.writeFileSync(filePath, buffer);
+
+            await sock.sendMessage(
+                chatId,
+                {
+                    [mediaType]: fs.readFileSync(filePath),
+                    mimetype: isImage ? "image/jpeg" : "video/mp4",
+                    caption: "_✅ Görüntü alındı!_",
+                },
+                { quoted: msg }
+            );
+
+            fs.unlinkSync(filePath);
+        } catch (err) {
+            console.error("Hata:", err);
+            await sock.sendMessage(
+                chatId,
+                { text: "_❌ Medya indirilemedi. Görüntü bir kez izlenmiş veya bozuk olabilir._" },
+                { quoted: msg }
+            );
+        }
     }
-  }
 );
 
-// --- OnMessage Event ---
 addCommand(
-  {
-    pattern: "onMessage",
-    access: "all",
-    dontAddCommandList: true,
-  },
-  async (msg, match, sock) => {
-    const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-    if (!quoted) return;
+    {
+        pattern: "onMessage",
+        access: "all",
+        dontAddCommandList: true,
+        desc: "_*Bir kez görüntülenen mesajları görmenizi sağlar.*_",
+    },
+    async (msg, match, sock, rawMessage) => {
+        const chatId = msg.key.remoteJid;
 
-    try {
-      const viewOnce =
-        quoted?.ephemeralMessage?.message?.viewOnceMessageV2Extension?.message ||
-        quoted?.ephemeralMessage?.message?.viewOnceMessageV2?.message ||
-        quoted?.ephemeralMessage?.message?.viewOnceMessage?.message ||
-        quoted?.viewOnceMessageV2Extension?.message ||
-        quoted?.viewOnceMessageV2?.message ||
-        quoted?.viewOnceMessage?.message ||
-        quoted;
+        // Yanıtlanan mesaj var mı?
+        const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        if (!quoted) {
+            return // hiç bir şey yapma
+            // return sock.sendMessage(
+            // chatId,
+            // { text: "_Lütfen bir kez görüntülenen bir mesaja yanıt verin!_" },
+            // { quoted: msg }
+            // );
+        }
 
-      const imageMsg = viewOnce.imageMessage;
-      const videoMsg = viewOnce.videoMessage;
-      if (!imageMsg && !videoMsg) return;
+        try {
+            const viewOnce =
+                quoted?.ephemeralMessage?.message?.viewOnceMessageV2Extension?.message ||
+                quoted?.ephemeralMessage?.message?.viewOnceMessageV2?.message ||
+                quoted?.ephemeralMessage?.message?.viewOnceMessage?.message ||
+                quoted?.viewOnceMessageV2Extension?.message ||
+                quoted?.viewOnceMessageV2?.message ||
+                quoted?.viewOnceMessage?.message ||
+                quoted;
 
-      const isImage = !!imageMsg;
-      const mediaType = isImage ? "image" : "video";
-      const mimetype = isImage ? "image/jpeg" : "video/mp4";
+            const imageMsg = viewOnce.imageMessage;
+            const videoMsg = viewOnce.videoMessage;
 
-      const buffer = await downloadMediaMessage(
-        { message: { viewOnceMessage: { message: viewOnce } } },
-        "buffer",
-        {},
-        { logger: sock.logger }
-      );
+            if (!imageMsg && !videoMsg) {
+                return
+                // return sock.sendMessage(
+                //     chatId,
+                //     { text: "_Bu bir medya mesajı değil veya zaten görüntülenmiş!_" },
+                //     { quoted: msg }
+                // );
+            }
 
-      // Görsel veya videoyu kendi numarana gönder
-      const myJid = sock.user.id.split(":")[0] + "@s.whatsapp.net";
-      await sock.sendMessage(myJid, { [mediaType]: buffer, mimetype, caption: "_✅ Görüntü alındı!_" }, { quoted: msg });
+            const isImage = !!imageMsg;
+            const mediaType = isImage ? "image" : "video";
+            const extension = isImage ? "jpg" : "mp4";
+            const fileName = `viewOnce_${Date.now()}.${extension}`;
+            const filePath = path.join(__dirname, fileName);
 
-    } catch (err) {
-      console.error("Hata:", err);
-      const myJid = sock.user.id.split(":")[0] + "@s.whatsapp.net";
-      await sock.sendMessage(myJid, { text: "_❌ Medya indirilemedi._" }, { quoted: msg });
+            // await sock.sendMessage(chatId, { text: "_⏳ İndiriliyor..._" }, { quoted: msg });
+
+            const buffer = await downloadMediaMessage(
+                { message: { viewOnceMessage: { message: viewOnce } } },
+                "buffer",
+                {},
+                { logger: sock.logger }
+            );
+
+            fs.writeFileSync(filePath, buffer);
+
+            await sock.sendMessage(
+                sock.user.id.split(":")[0] + `@s.whatsapp.net`,
+                {
+                    [mediaType]: fs.readFileSync(filePath),
+                    mimetype: isImage ? "image/jpeg" : "video/mp4",
+                    caption: "_✅ Görüntü alındı!_",
+                },
+                { quoted: msg }
+            );
+
+            fs.unlinkSync(filePath);
+        } catch (err) {
+            console.error("Hata:", err);
+            await sock.sendMessage(
+                sock.user.id.split(":")[0] + `@s.whatsapp.net`,
+                { text: "_❌ Medya indirilemedi. Görüntü bir kez izlenmiş veya bozuk olabilir._" },
+                { quoted: msg }
+            );
+        }
     }
-  }
 );

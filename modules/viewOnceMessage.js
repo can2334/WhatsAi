@@ -1,4 +1,3 @@
-const { downloadMediaMessage } = require("@whiskeysockets/baileys");
 
 // --- SHOW komutu ---
 addCommand(

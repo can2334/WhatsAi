@@ -30,7 +30,7 @@ addCommand({
     const statsMessage = `
 ${emoji} Pong!
 
-_Umut anamı ne zaman sikti_: ${responseTime}ms
+_Bot yanıt süresi_: ${responseTime}ms
 _Bot çalışma süresi_: ${uptimeHours} saat ${uptimeMinutes} dakika ${uptimeSeconds} saniye
 _Hafıza kullanımı (RSS)_: ${memoryUsageRSS.toFixed(2)} MB
 `.trim();

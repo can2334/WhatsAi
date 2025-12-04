@@ -1,3 +1,15 @@
+const originalError = console.error;
+console.error = (...args) => {
+  const text = args.join(" ");
+  if (
+    text.includes("Bad MAC") ||
+    text.includes("Session error") ||
+    text.includes("Closing open session in favor")
+  ) {
+    return; // sustur
+  }
+  originalError(...args); // diğer hatalar normalsin
+};
 const Module = require('module');
 const originalRequire = Module.prototype.require;
 const execSync = require('child_process').execSync;
